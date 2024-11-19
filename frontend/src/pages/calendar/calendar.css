@@ -77,7 +77,7 @@ body {
 }
 
 .event {
-  background: purple;
+  background: #6B398F;
   color: white;
   position: absolute;
   width: calc(100% - 8px);
@@ -92,6 +92,7 @@ body {
 
 .event:active {
   cursor: grabbing;
+  box-shadow: 0px 0px 10px 0px #6B398F
 }
 
 .event p {

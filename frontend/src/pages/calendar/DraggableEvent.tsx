@@ -29,7 +29,6 @@ export const DraggableEvent: React.FC<{
         transform: `translate(${transform?.x}px, ${transform?.y}px) scale(${
           isDragging ? 1.05 : 1
         })`,
-        boxShadow: `0px 0px ${isDragging ? 10 : 0}px 0px purple`,
         zIndex: isDragging ? 2 : 1,
       }}
     >
