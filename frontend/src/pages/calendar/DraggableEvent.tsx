@@ -15,6 +15,8 @@ export const DraggableEvent: React.FC<{
 
   const { height, top } = calculateEventBoundingBox(event, startOffsetHours)
 
+  const dateLabel = `${dateToTime(start)}-${dateToTime(end)}`
+
   return (
     <div
       ref={setNodeRef}
@@ -34,8 +36,8 @@ export const DraggableEvent: React.FC<{
       <p className="classTitle">{name}</p>
       {isDragging && <div className="datePlaceholder"></div>}
       {!isDragging && (
-        <p className="timeLabel">
-          {dateToTime(start)} - {dateToTime(end)}
+        <p className={"timeLabel" + (dateLabel.length > 12 ? " small" : "")}>
+          {dateLabel}
         </p>
       )}
     </div>

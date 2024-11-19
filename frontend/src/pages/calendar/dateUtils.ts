@@ -1,7 +1,17 @@
 import { WorkBlock } from "./calendarTypes"
 
 export function dateToTime(date: Date) {
-  return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`
+  const dayPeriod = date.getHours() < 12 ? "am" : "pm"
+  const convertedHour = date.getHours() === 12 ? 12 : date.getHours() % 12
+
+  if (date.getMinutes() === 0) {
+    return `${convertedHour}${dayPeriod}`
+  } else {
+    return `${convertedHour}:${String(date.getMinutes()).padStart(
+      2,
+      "0"
+    )}${dayPeriod}`
+  }
 }
 
 export function calculateEventBoundingBox(

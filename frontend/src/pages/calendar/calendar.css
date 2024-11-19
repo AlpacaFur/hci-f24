@@ -98,6 +98,10 @@ body {
   margin: 0;
 }
 
+.event .timeLabel.small {
+  font-size: 13px
+}
+
 .event .classTitle {
   font-size: 18px;
   font-weight: bold;
@@ -115,7 +119,7 @@ body {
   padding: 8px 15px;
 }
 
-.workZone {
+.work-zone {
   background: #22cc2249;
   border-radius: 8px;
   /* border: 6px dashed green; */
@@ -126,8 +130,16 @@ body {
   box-sizing: border-box;
   z-index: 1;
 
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
   /* stupid border hack from https://codepen.io/amit_sheen/pen/xxZeyjO */
   background-image: repeating-linear-gradient(0deg, var(--border-color), var(--border-color) 10px, transparent 10px, transparent 19px, var(--border-color) 19px), repeating-linear-gradient(90deg, var(--border-color), var(--border-color) 10px, transparent 10px, transparent 19px, var(--border-color) 19px), repeating-linear-gradient(180deg, var(--border-color), var(--border-color) 10px, transparent 10px, transparent 19px, var(--border-color) 19px), repeating-linear-gradient(270deg, var(--border-color), var(--border-color) 10px, transparent 10px, transparent 19px, var(--border-color) 19px); background-size: 4px 100%, 100% 4px, 4px 100% , 100% 4px; background-position: 0 0, 0 0, 100% 0, 0 100%; background-repeat: no-repeat;
+}
+
+.work-zone.hovering {
+  background-color: #22cc2222;
 }
 
 .calendar-side {
@@ -190,4 +202,121 @@ body {
   background: white;
   flex: 1;
   border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.assignments.over {
+  background: #ffffffaa;
+}
+
+.assignment {
+  z-index: 2;
+  position: relative;
+}
+
+.assignment-content {
+  background: green;
+  color: white;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  cursor: grab;
+}
+
+.assignment:active {
+  cursor: grabbing;
+}
+
+.assignment p {
+  margin: 0px;
+}
+
+.assignment .title {
+  font-weight: bold;
+  margin: 0px;
+}
+
+.assignment .assignment-content>div {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.assignment .size {
+  background: #ffffff55;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateX(0px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateX(0px);
+  }
+}
+
+.assignment .assignment-edit-modal {
+  display: none;
+  position: absolute;
+  left: -240px;
+  top: 0px;
+  background: white;
+  border: 4px solid green;
+  border-radius: 8px;
+  width: 225px;
+  color: green;
+  flex-direction: column;
+  box-sizing: border-box;
+  transform-origin: center right;
+  animation: slide-in 0.25s ease;
+}
+
+.assignment .assignment-edit-modal.editing {
+  display: flex;
+}
+
+.assignment .assignment-edit-modal h3 {
+  margin: 0px;
+  color: white;
+  /* width: 100%; */
+  padding: 8px
+}
+
+.assignment .assignment-edit-modal .header {
+  background: green;
+
+  display: flex;
+  align-self: stretch;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.assignment .assignment-edit-modal .header button {
+  width: 28px;
+  height: 28px;
+  margin-right: 5px;
+  border-radius: 20px;
+  padding: 0px;
+  background: #ffffff55;
+  color: white;
+  font-weight: bold;
+}
+
+.assignment .assignment-edit-modal:after {
+  content: "";
+  position: absolute;
+  right: -15px;
+  top: 10px;
+  border-left: 14px solid green;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
 }
