@@ -3,7 +3,6 @@ import NavBar from "../../components/navBar/navBar"
 import {
   DndContext,
   DragOverlay,
-  Modifier,
   PointerSensor,
   pointerWithin,
   useSensor,
@@ -16,59 +15,15 @@ import { range } from "./range"
 import { WorkBlock } from "./calendarTypes"
 import { Event } from "./calendarTypes"
 import { NavigationTabs } from "../../components/NavigationTabs"
-import { Transform } from "@dnd-kit/utilities"
 import { Assignment, DraggableAssignment } from "./DraggableAssignment"
 import { DroppableTimeSlot } from "./DroppableTimeSlot"
 import { snapCenterToCursor } from "@dnd-kit/modifiers"
-import { SortableContext } from "@dnd-kit/sortable"
 import { PlainAssignment } from "./PlainAssignment"
 import { AssignmentList } from "./AssignmentList"
-
-function createSnapModifier(gridSizeX: number, gridSizeY: number): Modifier {
-  return ({ transform }) => ({
-    ...transform,
-    x: Math.ceil((transform.x - gridSizeX / 2) / gridSizeX) * gridSizeX,
-    y: Math.ceil((transform.y - gridSizeY / 2) / gridSizeY) * gridSizeY,
-  })
-}
-
-// const resetModifier: Modifier = ({ transform, active }) => ({
-//   ...transform,
-//   x: active !== null ? transform.x : 0,
-//   y: active !== null ? transform.y : 0,
-// })
-
-type ClientRect = NonNullable<Parameters<Modifier>[0]["activeNodeRect"]>
-
-function restrictToBoundingRect(
-  transform: Transform,
-  rect: ClientRect,
-  boundingRect: ClientRect
-): Transform {
-  const value = {
-    ...transform,
-  }
-
-  if (rect.top + transform.y <= boundingRect.top) {
-    value.y = boundingRect.top - rect.top
-  } else if (
-    rect.bottom + transform.y >=
-    boundingRect.top + boundingRect.height
-  ) {
-    value.y = boundingRect.top + boundingRect.height - rect.bottom
-  }
-
-  if (rect.left + transform.x <= boundingRect.left) {
-    value.x = boundingRect.left - rect.left
-  } else if (
-    rect.right + transform.x >=
-    boundingRect.left + boundingRect.width
-  ) {
-    value.x = boundingRect.left + boundingRect.width - rect.right
-  }
-
-  return value
-}
+import {
+  createSnapModifier,
+  restrictToParentElement,
+} from "./dragAndDrop/customModifiers"
 
 const initialEvents: Event[] = [
   {
@@ -126,29 +81,6 @@ function getMinuteDifference(dateA: Date, dateB: Date): number {
 
 const minimumBlockSizeMinutes = 30
 const transitionTimeMinutes = 10
-
-const restrictToParentElement: (
-  containerRef: React.RefObject<HTMLDivElement>
-) => Modifier =
-  (containerRef): Modifier =>
-  ({ draggingNodeRect, transform }) => {
-    const rect = containerRef.current?.getBoundingClientRect()
-
-    if (!draggingNodeRect || rect === undefined) {
-      return transform
-    }
-
-    const clientRect = {
-      width: rect.width,
-      height: rect.height,
-      top: rect.top,
-      left: rect.left,
-      right: rect.right,
-      bottom: rect.bottom,
-    }
-
-    return restrictToBoundingRect(transform, draggingNodeRect, clientRect)
-  }
 
 export interface AssignmentLocation {
   assignment: Assignment
@@ -317,156 +249,147 @@ const HomePage: React.FC = () => {
               }
             }}
           >
-            <SortableContext
-              items={assignmentMap.map((location) => location.assignment.id)}
-            >
-              <div className="time-labels">
-                {range(startOffsetHours, endOfDayHour + 1).map((hour) => {
-                  const dayPeriod = hour < 12 ? "am" : "pm"
-                  const convertedHour = hour === 12 ? 12 : hour % 12
+            <div className="time-labels">
+              {range(startOffsetHours, endOfDayHour + 1).map((hour) => {
+                const dayPeriod = hour < 12 ? "am" : "pm"
+                const convertedHour = hour === 12 ? 12 : hour % 12
 
+                return (
+                  <p>
+                    {convertedHour}
+                    {dayPeriod}
+                  </p>
+                )
+              })}
+            </div>
+            <div className="content-frame">
+              <div className="calendar-dates">
+                {dates.map((sourceDate) => {
+                  const month = sourceDate.toLocaleDateString("en-us", {
+                    month: "short",
+                  })
+                  const dayOfTheWeek = sourceDate.toLocaleDateString("en-us", {
+                    weekday: "long",
+                  })
+                  const date = sourceDate.getDate()
                   return (
-                    <p>
-                      {convertedHour}
-                      {dayPeriod}
-                    </p>
+                    <div key={sourceDate.getTime()}>
+                      <p>{month}</p>
+                      <p>{date}</p>
+                      <p>{dayOfTheWeek}</p>
+                    </div>
                   )
                 })}
               </div>
-              <div className="content-frame">
-                <div className="calendar-dates">
-                  {dates.map((sourceDate) => {
-                    const month = sourceDate.toLocaleDateString("en-us", {
-                      month: "short",
-                    })
-                    const dayOfTheWeek = sourceDate.toLocaleDateString(
-                      "en-us",
-                      {
-                        weekday: "long",
-                      }
+              <div className="calendar-overlay-container">
+                <DndContext
+                  modifiers={[
+                    restrictToParentElement(contentFrameRef),
+                    createSnapModifier(150, 15),
+                  ]}
+                  autoScroll={false}
+                  onDragEnd={(draggedEvent) => {
+                    setEvents(
+                      events.map((event) => {
+                        if (event.id === draggedEvent.active.id) {
+                          return updateTimeFromCoordDelta(
+                            draggedEvent.delta.x,
+                            draggedEvent.delta.y,
+                            event
+                          )
+                        }
+                        return event
+                      })
                     )
-                    const date = sourceDate.getDate()
-                    return (
-                      <div key={sourceDate.getTime()}>
-                        <p>{month}</p>
-                        <p>{date}</p>
-                        <p>{dayOfTheWeek}</p>
-                      </div>
-                    )
-                  })}
-                </div>
-                <div className="calendar-overlay-container">
-                  <DndContext
-                    modifiers={[
-                      restrictToParentElement(contentFrameRef),
-                      createSnapModifier(150, 15),
-                    ]}
-                    autoScroll={false}
-                    onDragEnd={(draggedEvent) => {
-                      setEvents(
-                        events.map((event) => {
-                          if (event.id === draggedEvent.active.id) {
-                            return updateTimeFromCoordDelta(
-                              draggedEvent.delta.x,
-                              draggedEvent.delta.y,
-                              event
-                            )
-                          }
-                          return event
-                        })
-                      )
-                    }}
-                  >
-                    <div className="calendar-body" ref={contentFrameRef}>
-                      {dates.map((date) => {
-                        // TODO: make these checks more robust
-                        const eventsForDay = events.filter(
-                          ({ start }) => start.getDate() === date.getDate()
-                        )
-
-                        return (
-                          <div key={date.getTime()} className="day-column">
-                            {range(startOffsetHours, endOfDayHour).map(
-                              (num) => (
-                                <div
-                                  key={num}
-                                  className="calendar-background-cell"
-                                ></div>
-                              )
-                            )}
-                            {eventsForDay.map((event) => (
-                              <DraggableEvent
-                                event={event}
-                                key={event.start.getTime()}
-                                startOffsetHours={startOffsetHours}
-                              />
-                            ))}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </DndContext>
-                  <div className="calendar-body calendar-slot-overlay">
+                  }}
+                >
+                  <div className="calendar-body" ref={contentFrameRef}>
                     {dates.map((date) => {
                       // TODO: make these checks more robust
-                      const workBlocksForDay = freeSlots.filter(
+                      const eventsForDay = events.filter(
                         ({ start }) => start.getDate() === date.getDate()
                       )
 
                       return (
                         <div key={date.getTime()} className="day-column">
-                          {workBlocksForDay.map((event) => (
-                            <DroppableTimeSlot
-                              key={event.id}
-                              workBlock={{
-                                start: event.start,
-                                end: event.end,
-                                id: event.id,
-                              }}
+                          {range(startOffsetHours, endOfDayHour).map((num) => (
+                            <div
+                              key={num}
+                              className="calendar-background-cell"
+                            ></div>
+                          ))}
+                          {eventsForDay.map((event) => (
+                            <DraggableEvent
+                              event={event}
+                              key={event.start.getTime()}
                               startOffsetHours={startOffsetHours}
-                            >
-                              {assignmentMap
-                                .filter(
-                                  (location) =>
-                                    location.slotId === String(event.id)
-                                )
-                                .map((location) => (
-                                  <DraggableAssignment
-                                    key={location.assignment.id}
-                                    assignment={location.assignment}
-                                  />
-                                ))}
-                            </DroppableTimeSlot>
+                            />
                           ))}
                         </div>
                       )
                     })}
                   </div>
+                </DndContext>
+                <div className="calendar-body calendar-slot-overlay">
+                  {dates.map((date) => {
+                    // TODO: make these checks more robust
+                    const workBlocksForDay = freeSlots.filter(
+                      ({ start }) => start.getDate() === date.getDate()
+                    )
+
+                    return (
+                      <div key={date.getTime()} className="day-column">
+                        {workBlocksForDay.map((event) => (
+                          <DroppableTimeSlot
+                            key={event.id}
+                            workBlock={{
+                              start: event.start,
+                              end: event.end,
+                              id: event.id,
+                            }}
+                            startOffsetHours={startOffsetHours}
+                          >
+                            {assignmentMap
+                              .filter(
+                                (location) =>
+                                  location.slotId === String(event.id)
+                              )
+                              .map((location) => (
+                                <DraggableAssignment
+                                  key={location.assignment.id}
+                                  assignment={location.assignment}
+                                />
+                              ))}
+                          </DroppableTimeSlot>
+                        ))}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
-              <AssignmentList assignmentMap={assignmentMap} />
+            </div>
+            <AssignmentList assignmentMap={assignmentMap} />
 
-              <DragOverlay
-                dropAnimation={{
-                  keyframes: (props) => [
-                    {
-                      // maxWidth: "100%",
-                      transform: `translate(${props.transform.initial.x}px, ${props.transform.initial.y}px)`,
-                    },
-                    {
-                      // maxWidth: "112px",
-                      transform: `translate(${props.transform.final.x}px, ${props.transform.final.y}px)`,
-                    },
-                  ],
-                  easing: "ease",
-                  duration: 300,
-                }}
-              >
-                {activeAssignment && (
-                  <PlainAssignment assignment={activeAssignment} />
-                )}
-              </DragOverlay>
-            </SortableContext>
+            <DragOverlay
+              dropAnimation={{
+                keyframes: (props) => [
+                  {
+                    // maxWidth: "100%",
+                    transform: `translate(${props.transform.initial.x}px, ${props.transform.initial.y}px)`,
+                  },
+                  {
+                    // maxWidth: "112px",
+                    transform: `translate(${props.transform.final.x}px, ${props.transform.final.y}px)`,
+                  },
+                ],
+                easing: "ease",
+                duration: 300,
+              }}
+            >
+              {activeAssignment && (
+                <PlainAssignment assignment={activeAssignment} />
+              )}
+            </DragOverlay>
           </DndContext>
         </div>
       </div>
