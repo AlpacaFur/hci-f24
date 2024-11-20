@@ -228,7 +228,7 @@ body {
   cursor: grab;
 }
 
-.assignment:active {
+.assignment-content:active, .assignment-content.dragging {
   cursor: grabbing;
 }
 
