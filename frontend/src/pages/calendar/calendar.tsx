@@ -8,26 +8,17 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core"
-import { useRef, useState } from "react"
-import { updateTimeFromCoordDelta } from "./dates/dateUtils"
-import { DraggableEvent } from "./dragAndDrop/DraggableEvent"
+import { useState } from "react"
 import { range } from "./range"
 import { Event } from "./calendarTypes"
 import { NavigationTabs } from "../../components/NavigationTabs"
-import {
-  Assignment,
-  DraggableAssignment,
-} from "./dragAndDrop/DraggableAssignment"
-import { DroppableTimeSlot } from "./dragAndDrop/DroppableTimeSlot"
+import { Assignment } from "./dragAndDrop/DraggableAssignment"
 import { snapCenterToCursor } from "@dnd-kit/modifiers"
 import { PlainAssignment } from "./dragAndDrop/PlainAssignment"
 import { AssignmentList } from "./dragAndDrop/AssignmentList"
-import {
-  createSnapModifier,
-  customDropAnimation,
-  restrictToParentElement,
-} from "./dragAndDrop/customModifiers"
+import { customDropAnimation } from "./dragAndDrop/customModifiers"
 import { generateSlots, TimePreferences } from "./slotAlgorithm/generateSlots"
+import { CalendarContent } from "./calendarComponents/CalendarContent"
 
 const initialEvents: Event[] = [
   {
@@ -95,8 +86,6 @@ const HomePage: React.FC = () => {
   )
 
   const freeSlots = generateSlots(dates, events, TIME_PREFS)
-
-  const contentFrameRef = useRef<HTMLDivElement>(null)
 
   const assignmentSensors = useSensors(
     useSensor(PointerSensor, {
@@ -181,95 +170,14 @@ const HomePage: React.FC = () => {
                   )
                 })}
               </div>
-              <div className="calendar-overlay-container">
-                <DndContext
-                  modifiers={[
-                    restrictToParentElement(contentFrameRef),
-                    createSnapModifier(150, 15),
-                  ]}
-                  autoScroll={false}
-                  onDragEnd={(draggedEvent) => {
-                    setEvents(
-                      events.map((event) => {
-                        if (event.id === draggedEvent.active.id) {
-                          return updateTimeFromCoordDelta(
-                            draggedEvent.delta.x,
-                            draggedEvent.delta.y,
-                            event
-                          )
-                        }
-                        return event
-                      })
-                    )
-                  }}
-                >
-                  <div className="calendar-body" ref={contentFrameRef}>
-                    {dates.map((date) => {
-                      // TODO: make these checks more robust
-                      const eventsForDay = events.filter(
-                        ({ start }) => start.getDate() === date.getDate()
-                      )
-
-                      return (
-                        <div key={date.getTime()} className="day-column">
-                          {range(
-                            TIME_PREFS.displayStartHour,
-                            TIME_PREFS.displayEndHour
-                          ).map((num) => (
-                            <div
-                              key={num}
-                              className="calendar-background-cell"
-                            ></div>
-                          ))}
-                          {eventsForDay.map((event) => (
-                            <DraggableEvent
-                              event={event}
-                              key={event.start.getTime()}
-                              startOffsetHours={TIME_PREFS.displayStartHour}
-                            />
-                          ))}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </DndContext>
-                <div className="calendar-body calendar-slot-overlay">
-                  {dates.map((date) => {
-                    // TODO: make these checks more robust
-                    const workBlocksForDay = freeSlots.filter(
-                      ({ start }) => start.getDate() === date.getDate()
-                    )
-
-                    return (
-                      <div key={date.getTime()} className="day-column">
-                        {workBlocksForDay.map((event) => (
-                          <DroppableTimeSlot
-                            key={event.id}
-                            workBlock={{
-                              start: event.start,
-                              end: event.end,
-                              id: event.id,
-                            }}
-                            startOffsetHours={TIME_PREFS.displayStartHour}
-                          >
-                            {assignmentMap
-                              .filter(
-                                (location) =>
-                                  location.slotId === String(event.id)
-                              )
-                              .map((location) => (
-                                <DraggableAssignment
-                                  key={location.assignment.id}
-                                  assignment={location.assignment}
-                                />
-                              ))}
-                          </DroppableTimeSlot>
-                        ))}
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
+              <CalendarContent
+                dates={dates}
+                events={events}
+                setEvents={setEvents}
+                timePreferences={TIME_PREFS}
+                assignments={assignmentMap}
+                freeSlots={freeSlots}
+              />
             </div>
             <AssignmentList assignmentMap={assignmentMap} />
 
