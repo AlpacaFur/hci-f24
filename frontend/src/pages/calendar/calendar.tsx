@@ -15,16 +15,19 @@ import {
   getStartOfDayTime,
   updateTimeFromCoordDelta,
 } from "./dates/dateUtils"
-import { DraggableEvent } from "./DraggableEvent"
+import { DraggableEvent } from "./dragAndDrop/DraggableEvent"
 import { range } from "./range"
 import { WorkBlock } from "./calendarTypes"
 import { Event } from "./calendarTypes"
 import { NavigationTabs } from "../../components/NavigationTabs"
-import { Assignment, DraggableAssignment } from "./DraggableAssignment"
-import { DroppableTimeSlot } from "./DroppableTimeSlot"
+import {
+  Assignment,
+  DraggableAssignment,
+} from "./dragAndDrop/DraggableAssignment"
+import { DroppableTimeSlot } from "./dragAndDrop/DroppableTimeSlot"
 import { snapCenterToCursor } from "@dnd-kit/modifiers"
-import { PlainAssignment } from "./PlainAssignment"
-import { AssignmentList } from "./AssignmentList"
+import { PlainAssignment } from "./dragAndDrop/PlainAssignment"
+import { AssignmentList } from "./dragAndDrop/AssignmentList"
 import {
   createSnapModifier,
   customDropAnimation,

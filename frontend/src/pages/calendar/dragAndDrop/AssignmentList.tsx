@@ -1,5 +1,5 @@
 import { useDroppable } from "@dnd-kit/core"
-import { AssignmentLocation } from "./calendar"
+import { AssignmentLocation } from "../calendar"
 import { DraggableAssignment } from "./DraggableAssignment"
 
 export const AssignmentList: React.FC<{
