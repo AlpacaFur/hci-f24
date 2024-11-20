@@ -1,4 +1,4 @@
-import { Modifier } from "@dnd-kit/core"
+import { DropAnimation, Modifier } from "@dnd-kit/core"
 import { Transform } from "@dnd-kit/utilities"
 
 export function createSnapModifier(
@@ -65,3 +65,16 @@ export const restrictToParentElement: (
 
     return restrictToBoundingRect(transform, draggingNodeRect, clientRect)
   }
+
+export const customDropAnimation: DropAnimation = {
+  keyframes: (props) => [
+    {
+      transform: `translate(${props.transform.initial.x}px, ${props.transform.initial.y}px)`,
+    },
+    {
+      transform: `translate(${props.transform.final.x}px, ${props.transform.final.y}px)`,
+    },
+  ],
+  easing: "ease",
+  duration: 300,
+}

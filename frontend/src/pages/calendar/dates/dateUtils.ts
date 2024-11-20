@@ -1,4 +1,5 @@
 import { WorkBlock } from "../calendarTypes"
+import { Event } from "../calendarTypes"
 
 export function dateToTime(date: Date) {
   const dayPeriod = date.getHours() < 12 ? "am" : "pm"
@@ -42,3 +43,32 @@ export function getStartOfDayTime(date: Date, startOffsetHours: number): Date {
 export function addMinutes(date: Date, minutes: number): Date {
   return new Date(date.getTime() + 1000 * 60 * minutes)
 }
+export function getMinuteDifference(dateA: Date, dateB: Date): number {
+  return (dateA.getTime() - dateB.getTime()) / 1000 / 60
+}
+export function updateTimeFromCoordDelta(
+  deltaX: number,
+  deltaY: number,
+  event: Event
+  // startOfDayDate: Date
+): Event {
+  const { start, end } = event
+
+  const newStart = start.getTime() + deltaY * 1000 * 60 + deltaX * millisPerDay
+  const newStartDate = new Date(newStart)
+  newStartDate.setMinutes(roundToNearestInterval(newStartDate.getMinutes(), 15))
+
+  const newEnd = end.getTime() + deltaY * 1000 * 60 + deltaX * millisPerDay
+  const newEndDate = new Date(newEnd)
+  newEndDate.setMinutes(roundToNearestInterval(newEndDate.getMinutes(), 15))
+
+  return {
+    ...event,
+    start: newStartDate,
+    end: newEndDate,
+  }
+}
+export function roundToNearestInterval(value: number, interval: number) {
+  return Math.round(value / interval) * interval
+}
+export const millisPerDay = (1000 * 60 * 60 * 24) / 150

@@ -9,7 +9,12 @@ import {
   useSensors,
 } from "@dnd-kit/core"
 import { useRef, useState } from "react"
-import { addMinutes, getStartOfDayTime } from "./dates/dateUtils"
+import {
+  addMinutes,
+  getMinuteDifference,
+  getStartOfDayTime,
+  updateTimeFromCoordDelta,
+} from "./dates/dateUtils"
 import { DraggableEvent } from "./DraggableEvent"
 import { range } from "./range"
 import { WorkBlock } from "./calendarTypes"
@@ -22,6 +27,7 @@ import { PlainAssignment } from "./PlainAssignment"
 import { AssignmentList } from "./AssignmentList"
 import {
   createSnapModifier,
+  customDropAnimation,
   restrictToParentElement,
 } from "./dragAndDrop/customModifiers"
 
@@ -45,39 +51,6 @@ const initialEvents: Event[] = [
     id: 3,
   },
 ]
-
-function roundToNearestInterval(value: number, interval: number) {
-  return Math.round(value / interval) * interval
-}
-
-const millisPerDay = (1000 * 60 * 60 * 24) / 150
-
-function updateTimeFromCoordDelta(
-  deltaX: number,
-  deltaY: number,
-  event: Event
-  // startOfDayDate: Date
-): Event {
-  const { start, end } = event
-
-  const newStart = start.getTime() + deltaY * 1000 * 60 + deltaX * millisPerDay
-  const newStartDate = new Date(newStart)
-  newStartDate.setMinutes(roundToNearestInterval(newStartDate.getMinutes(), 15))
-
-  const newEnd = end.getTime() + deltaY * 1000 * 60 + deltaX * millisPerDay
-  const newEndDate = new Date(newEnd)
-  newEndDate.setMinutes(roundToNearestInterval(newEndDate.getMinutes(), 15))
-
-  return {
-    ...event,
-    start: newStartDate,
-    end: newEndDate,
-  }
-}
-
-function getMinuteDifference(dateA: Date, dateB: Date): number {
-  return (dateA.getTime() - dateB.getTime()) / 1000 / 60
-}
 
 const minimumBlockSizeMinutes = 30
 const transitionTimeMinutes = 10
@@ -233,19 +206,6 @@ const HomePage: React.FC = () => {
                     slotId: String(event.over!.id),
                   },
                 ])
-              } else {
-                // setAssignmentMap((map) =>
-                //   map.map((location) => {
-                //     if (location.assignment.id === Number(event.active.id)) {
-                //       return {
-                //         slotId: location.slotId,
-                //         assignment: { ...location.assignment },
-                //       }
-                //     } else {
-                //       return location
-                //     }
-                //   })
-                // )
               }
             }}
           >
@@ -370,22 +330,7 @@ const HomePage: React.FC = () => {
             </div>
             <AssignmentList assignmentMap={assignmentMap} />
 
-            <DragOverlay
-              dropAnimation={{
-                keyframes: (props) => [
-                  {
-                    // maxWidth: "100%",
-                    transform: `translate(${props.transform.initial.x}px, ${props.transform.initial.y}px)`,
-                  },
-                  {
-                    // maxWidth: "112px",
-                    transform: `translate(${props.transform.final.x}px, ${props.transform.final.y}px)`,
-                  },
-                ],
-                easing: "ease",
-                duration: 300,
-              }}
-            >
+            <DragOverlay dropAnimation={customDropAnimation}>
               {activeAssignment && (
                 <PlainAssignment assignment={activeAssignment} />
               )}
