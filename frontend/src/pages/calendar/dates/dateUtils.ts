@@ -1,4 +1,4 @@
-import { WorkBlock } from "./calendarTypes"
+import { WorkBlock } from "../calendarTypes"
 
 export function dateToTime(date: Date) {
   const dayPeriod = date.getHours() < 12 ? "am" : "pm"

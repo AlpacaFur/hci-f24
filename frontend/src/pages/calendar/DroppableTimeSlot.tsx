@@ -1,6 +1,6 @@
 import { useDroppable } from "@dnd-kit/core"
 import { WorkBlock } from "./calendarTypes"
-import { calculateEventBoundingBox } from "./dateUtils"
+import { calculateEventBoundingBox } from "./dates/dateUtils"
 import { PropsWithChildren } from "react"
 
 export const DroppableTimeSlot: React.FC<

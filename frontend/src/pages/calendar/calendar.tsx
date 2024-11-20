@@ -9,7 +9,7 @@ import {
   useSensors,
 } from "@dnd-kit/core"
 import { useRef, useState } from "react"
-import { addMinutes, getStartOfDayTime } from "./dateUtils"
+import { addMinutes, getStartOfDayTime } from "./dates/dateUtils"
 import { DraggableEvent } from "./DraggableEvent"
 import { range } from "./range"
 import { WorkBlock } from "./calendarTypes"

@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/core"
-import { calculateEventBoundingBox, dateToTime } from "./dateUtils"
+import { calculateEventBoundingBox, dateToTime } from "./dates/dateUtils"
 import { Event } from "./calendarTypes"
 
 export const DraggableEvent: React.FC<{
