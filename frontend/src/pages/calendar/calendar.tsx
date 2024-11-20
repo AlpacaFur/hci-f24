@@ -9,15 +9,9 @@ import {
   useSensors,
 } from "@dnd-kit/core"
 import { useRef, useState } from "react"
-import {
-  addMinutes,
-  getMinuteDifference,
-  getStartOfDayTime,
-  updateTimeFromCoordDelta,
-} from "./dates/dateUtils"
+import { updateTimeFromCoordDelta } from "./dates/dateUtils"
 import { DraggableEvent } from "./dragAndDrop/DraggableEvent"
 import { range } from "./range"
-import { WorkBlock } from "./calendarTypes"
 import { Event } from "./calendarTypes"
 import { NavigationTabs } from "../../components/NavigationTabs"
 import {
@@ -33,6 +27,7 @@ import {
   customDropAnimation,
   restrictToParentElement,
 } from "./dragAndDrop/customModifiers"
+import { generateSlots, TimePreferences } from "./slotAlgorithm/generateSlots"
 
 const initialEvents: Event[] = [
   {
@@ -55,8 +50,14 @@ const initialEvents: Event[] = [
   },
 ]
 
-const minimumBlockSizeMinutes = 30
-const transitionTimeMinutes = 10
+const TIME_PREFS: TimePreferences = {
+  displayStartHour: 9,
+  displayEndHour: 21,
+  workingStartHour: 10,
+  workingEndHour: 20,
+  minimumBlockSizeMinutes: 30,
+  transitionTimeMinutes: 10,
+}
 
 export interface AssignmentLocation {
   assignment: Assignment
@@ -64,11 +65,6 @@ export interface AssignmentLocation {
 }
 
 const HomePage: React.FC = () => {
-  const startOffsetHours = 9
-  const endOfDayHour = 21
-  const startWorkingHours = 10
-  const endWorkingHours = 20
-
   const dates = Array(7)
     .fill(0)
     .map(
@@ -98,69 +94,7 @@ const HomePage: React.FC = () => {
     )
   )
 
-  const generateSlots = (): WorkBlock[] => {
-    const newFreeSlots: WorkBlock[] = []
-    let id = 0
-    dates.forEach((date) => {
-      const eventsOnDate = events.filter(
-        (event) => event.start.getDate() === date.getDate()
-      )
-      eventsOnDate.sort((a, b) => a.start.getTime() - b.start.getTime())
-      const startOfDayDate = getStartOfDayTime(date, startWorkingHours)
-      const endOfDayDate = getStartOfDayTime(date, endWorkingHours)
-
-      eventsOnDate.forEach((event, index) => {
-        if (index === 0) {
-          if (
-            getMinuteDifference(event.start, startOfDayDate) >
-            minimumBlockSizeMinutes + transitionTimeMinutes
-          ) {
-            newFreeSlots.push({
-              id: id++,
-              start: startOfDayDate,
-              end: addMinutes(event.start, -transitionTimeMinutes),
-            })
-          }
-        } else {
-          const prevEvent = eventsOnDate[index - 1]
-
-          if (
-            getMinuteDifference(event.start, prevEvent.end) >
-            minimumBlockSizeMinutes + transitionTimeMinutes * 2
-          ) {
-            newFreeSlots.push({
-              id: id++,
-              start: addMinutes(prevEvent.end, transitionTimeMinutes),
-              end: addMinutes(event.start, -transitionTimeMinutes),
-            })
-          }
-        }
-      })
-
-      if (eventsOnDate.length >= 1) {
-        const lastEvent = eventsOnDate[eventsOnDate.length - 1]
-        if (
-          getMinuteDifference(endOfDayDate, lastEvent.end) >
-          transitionTimeMinutes + minimumBlockSizeMinutes
-        ) {
-          newFreeSlots.push({
-            id: id++,
-            start: addMinutes(lastEvent.end, transitionTimeMinutes),
-            end: endOfDayDate,
-          })
-        }
-      } else if (eventsOnDate.length === 0) {
-        newFreeSlots.push({
-          id: id++,
-          start: startOfDayDate,
-          end: endOfDayDate,
-        })
-      }
-    })
-    return newFreeSlots
-  }
-
-  const freeSlots = generateSlots()
+  const freeSlots = generateSlots(dates, events, TIME_PREFS)
 
   const contentFrameRef = useRef<HTMLDivElement>(null)
 
@@ -213,7 +147,10 @@ const HomePage: React.FC = () => {
             }}
           >
             <div className="time-labels">
-              {range(startOffsetHours, endOfDayHour + 1).map((hour) => {
+              {range(
+                TIME_PREFS.displayStartHour,
+                TIME_PREFS.displayEndHour + 1
+              ).map((hour) => {
                 const dayPeriod = hour < 12 ? "am" : "pm"
                 const convertedHour = hour === 12 ? 12 : hour % 12
 
@@ -275,7 +212,10 @@ const HomePage: React.FC = () => {
 
                       return (
                         <div key={date.getTime()} className="day-column">
-                          {range(startOffsetHours, endOfDayHour).map((num) => (
+                          {range(
+                            TIME_PREFS.displayStartHour,
+                            TIME_PREFS.displayEndHour
+                          ).map((num) => (
                             <div
                               key={num}
                               className="calendar-background-cell"
@@ -285,7 +225,7 @@ const HomePage: React.FC = () => {
                             <DraggableEvent
                               event={event}
                               key={event.start.getTime()}
-                              startOffsetHours={startOffsetHours}
+                              startOffsetHours={TIME_PREFS.displayStartHour}
                             />
                           ))}
                         </div>
@@ -310,7 +250,7 @@ const HomePage: React.FC = () => {
                               end: event.end,
                               id: event.id,
                             }}
-                            startOffsetHours={startOffsetHours}
+                            startOffsetHours={TIME_PREFS.displayStartHour}
                           >
                             {assignmentMap
                               .filter(
