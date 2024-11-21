@@ -122,7 +122,7 @@ const HomePage: React.FC = () => {
   }
 
   const createAssignment = () => {
-    const newId = assignments.length + 1
+    const newId = assignments[assignments.length - 1].assignment.id + 1
 
     setAssignments((assignments) => [
       ...assignments,
