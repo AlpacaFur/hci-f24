@@ -17,6 +17,7 @@ export const CalendarContent: React.FC<{
   dates: Date[]
   timePreferences: TimePreferences
   assignments: AssignmentLocation[]
+  setAssignments: Dispatch<SetStateAction<AssignmentLocation[]>>
   freeSlots: WorkBlock[]
 }> = ({
   setEvents,
@@ -24,6 +25,7 @@ export const CalendarContent: React.FC<{
   dates,
   timePreferences,
   assignments,
+  setAssignments,
   freeSlots,
 }) => {
   const contentFrameRef = useRef<HTMLDivElement>(null)
@@ -60,6 +62,7 @@ export const CalendarContent: React.FC<{
       </DndContext>
       <CalendarWorkSlots
         assignments={assignments}
+        setAssignments={setAssignments}
         dates={dates}
         freeSlots={freeSlots}
         timePreferences={timePreferences}

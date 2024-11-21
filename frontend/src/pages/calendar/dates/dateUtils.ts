@@ -72,3 +72,10 @@ export function roundToNearestInterval(value: number, interval: number) {
   return Math.round(value / interval) * interval
 }
 export const millisPerDay = (1000 * 60 * 60 * 24) / 150
+
+export function toISODate(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(date.getDate() + 1).padStart(2, "0")}`
+}

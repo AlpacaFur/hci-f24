@@ -1,16 +1,22 @@
 import { useDraggable } from "@dnd-kit/core"
 import { useState } from "react"
+import { EditAssignmentModal } from "../editModal/EditAssignmentModal"
 
 export interface Assignment {
   title: string
   id: number
   className: string
+  dueDate: Date
   minuteLength: number
+  priority: -1 | 0 | 1
 }
 
-export const DraggableAssignment: React.FC<{ assignment: Assignment }> = ({
-  assignment: { id, title, className, minuteLength },
-}) => {
+export const DraggableAssignment: React.FC<{
+  assignment: Assignment
+  updateAssignment: (assignment: Assignment) => void
+}> = ({ assignment, updateAssignment }) => {
+  const { id, title, className, minuteLength } = assignment
+
   const [editing, setEditing] = useState(false)
 
   const { attributes, listeners, setNodeRef, isDragging, setActivatorNodeRef } =
@@ -28,6 +34,9 @@ export const DraggableAssignment: React.FC<{ assignment: Assignment }> = ({
       <div
         {...listeners}
         className="assignment-content"
+        style={{
+          height: minuteLength,
+        }}
         onClick={() => setEditing((editing) => !editing)}
         ref={setActivatorNodeRef}
       >
@@ -37,20 +46,12 @@ export const DraggableAssignment: React.FC<{ assignment: Assignment }> = ({
           <p className="size">{minuteLength}</p>
         </div>
       </div>
-      <div className={"assignment-edit-modal" + (editing ? " editing" : "")}>
-        <div className="header">
-          <h3>Edit Assignment</h3>
-          <button
-            onClick={(event) => {
-              setEditing(false)
-              event.preventDefault()
-            }}
-          >
-            ✗
-          </button>
-        </div>
-        <p>123 abc</p>
-      </div>
+      <EditAssignmentModal
+        assignment={assignment}
+        updateAssignment={updateAssignment}
+        hide={() => setEditing(false)}
+        isShown={editing}
+      />
     </div>
   )
 }

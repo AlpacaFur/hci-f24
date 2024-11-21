@@ -5,7 +5,10 @@ export const PlainAssignment: React.FC<{ assignment: Assignment }> = ({
 }) => {
   return (
     <div className="assignment">
-      <div className="assignment-content dragging">
+      <div
+        className="assignment-content dragging"
+        style={{ height: minuteLength }}
+      >
         <p className="title">{title}</p>
         <div>
           <p className="class">{className}</p>

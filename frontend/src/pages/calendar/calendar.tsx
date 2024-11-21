@@ -78,6 +78,8 @@ const HomePage: React.FC = () => {
         assignment: {
           className: "HCI",
           title: "Project Proposal " + id,
+          priority: 0,
+          dueDate: new Date("2024-11-22 00:00"),
           id,
           minuteLength: 60,
         },
@@ -176,10 +178,14 @@ const HomePage: React.FC = () => {
                 setEvents={setEvents}
                 timePreferences={TIME_PREFS}
                 assignments={assignmentMap}
+                setAssignments={setAssignmentMap}
                 freeSlots={freeSlots}
               />
             </div>
-            <AssignmentList assignmentMap={assignmentMap} />
+            <AssignmentList
+              assignments={assignmentMap}
+              setAssignments={setAssignmentMap}
+            />
 
             <DragOverlay dropAnimation={customDropAnimation}>
               {activeAssignment && (

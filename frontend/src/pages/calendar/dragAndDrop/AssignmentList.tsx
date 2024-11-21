@@ -1,10 +1,12 @@
 import { useDroppable } from "@dnd-kit/core"
 import { AssignmentLocation } from "../calendar"
 import { DraggableAssignment } from "./DraggableAssignment"
+import { Dispatch, SetStateAction } from "react"
 
 export const AssignmentList: React.FC<{
-  assignmentMap: AssignmentLocation[]
-}> = ({ assignmentMap }) => {
+  assignments: AssignmentLocation[]
+  setAssignments: Dispatch<SetStateAction<AssignmentLocation[]>>
+}> = ({ assignments, setAssignments }) => {
   const { setNodeRef, isOver } = useDroppable({ id: "assignments" })
 
   return (
@@ -15,10 +17,27 @@ export const AssignmentList: React.FC<{
         Assignments
       </h2>
       <div className={"assignments" + (isOver ? " over" : "")} ref={setNodeRef}>
-        {assignmentMap
+        {assignments
           .filter((location) => location.slotId === "assignments")
           .map(({ assignment }) => (
-            <DraggableAssignment key={assignment.id} assignment={assignment} />
+            <DraggableAssignment
+              key={assignment.id}
+              assignment={assignment}
+              updateAssignment={(updatedAssignment) => {
+                setAssignments((assignments) =>
+                  assignments.map((currentAssignment) => {
+                    if (currentAssignment.assignment.id === assignment.id) {
+                      return {
+                        slotId: currentAssignment.slotId,
+                        assignment: updatedAssignment,
+                      }
+                    } else {
+                      return currentAssignment
+                    }
+                  })
+                )
+              }}
+            />
           ))}
       </div>
     </div>
