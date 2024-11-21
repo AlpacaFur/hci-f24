@@ -1,5 +1,7 @@
 import "./optimizations.css"
 import NavBar from "../../components/navBar/navBar"
+import { LessTimeComponent } from "./optimization components/notEnoughTime"
+import { ExtraTimeComponent } from "./optimization components/tooMuchTime"
 
 export const OptimizationsPage: React.FC = () => {
   return (
@@ -13,11 +15,11 @@ export const OptimizationsPage: React.FC = () => {
           </a>
           <a href="/insights">Insights</a>
         </div>
-
         <div className="content-frame">
-          <h1>Optimizations!</h1>
+          <h1>Optimizations</h1>
         </div>
-        <h1>TBD -- not done yet</h1>
+        <LessTimeComponent/>
+       <ExtraTimeComponent/>
       </div>
     </div>
   )
