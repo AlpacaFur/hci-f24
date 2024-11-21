@@ -112,10 +112,39 @@ const HomePage: React.FC = () => {
       assignments.map((assignment) => {
         if (assignment.assignment.id === id) {
           return { ...assignment, editing }
+        } else if (assignment.editing) {
+          return { ...assignment, editing: false }
         } else {
           return assignment
         }
       })
+    )
+  }
+
+  const createAssignment = () => {
+    const newId = assignments.length + 1
+
+    setAssignments((assignments) => [
+      ...assignments,
+      {
+        editing: true,
+        slotId: "assignments",
+        assignment: {
+          className: "HCI",
+          dueDate: new Date(),
+          id: newId,
+          minuteLength: 60,
+          priority: 0,
+          title: "New Assignment",
+        },
+      },
+    ])
+    setEditing(newId, true)
+  }
+
+  const deleteAssignment = (id: number) => {
+    setAssignments((assignments) =>
+      assignments.filter((assignment) => assignment.assignment.id !== id)
     )
   }
 
@@ -213,6 +242,7 @@ const HomePage: React.FC = () => {
                 assignments={assignments}
                 setEditing={setEditing}
                 updateAssignment={updateAssignment}
+                deleteAssignment={deleteAssignment}
                 freeSlots={freeSlots}
               />
             </div>
@@ -220,6 +250,8 @@ const HomePage: React.FC = () => {
               assignments={assignments}
               updateAssignment={updateAssignment}
               setEditing={setEditing}
+              deleteAssignment={deleteAssignment}
+              createAssignment={createAssignment}
             />
 
             <DragOverlay dropAnimation={customDropAnimation}>

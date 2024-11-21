@@ -19,7 +19,9 @@ export const CalendarContent: React.FC<{
   timePreferences: TimePreferences
   assignments: AssignmentLocation[]
   updateAssignment: (id: number, assignment: Partial<Assignment>) => void
+  deleteAssignment: (id: number) => void
   setEditing: (id: number, editing: boolean) => void
+
   freeSlots: WorkBlock[]
 }> = ({
   setEvents,
@@ -30,6 +32,7 @@ export const CalendarContent: React.FC<{
   freeSlots,
   updateAssignment,
   setEditing,
+  deleteAssignment,
 }) => {
   const contentFrameRef = useRef<HTMLDivElement>(null)
 
@@ -70,6 +73,7 @@ export const CalendarContent: React.FC<{
         freeSlots={freeSlots}
         timePreferences={timePreferences}
         setEditing={setEditing}
+        deleteAssignment={deleteAssignment}
       />
     </div>
   )

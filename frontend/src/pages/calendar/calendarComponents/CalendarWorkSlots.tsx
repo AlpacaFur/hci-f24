@@ -14,6 +14,7 @@ export const CalendarWorkSlots: React.FC<{
   assignments: AssignmentLocation[]
   updateAssignment: (id: number, assignment: Partial<Assignment>) => void
   setEditing: (id: number, editing: boolean) => void
+  deleteAssignment: (id: number) => void
 }> = ({
   freeSlots,
   dates,
@@ -21,6 +22,7 @@ export const CalendarWorkSlots: React.FC<{
   assignments,
   updateAssignment,
   setEditing,
+  deleteAssignment,
 }) => {
   return (
     <div className="calendar-body calendar-slot-overlay">
@@ -54,6 +56,9 @@ export const CalendarWorkSlots: React.FC<{
                       editing={location.editing}
                       setEditing={(editing) =>
                         setEditing(location.assignment.id, editing)
+                      }
+                      deleteAssignment={() =>
+                        deleteAssignment(location.assignment.id)
                       }
                     />
                   ))}

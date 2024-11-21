@@ -7,7 +7,8 @@ export const EditAssignmentModal: React.FC<{
   hide: () => void
   assignment: Assignment
   updateAssignment: (assignment: Partial<Assignment>) => void
-}> = ({ isShown, hide, assignment, updateAssignment }) => {
+  deleteAssignment: () => void
+}> = ({ isShown, hide, assignment, updateAssignment, deleteAssignment }) => {
   const { title, minuteLength, priority, dueDate, className } = assignment
 
   return (
@@ -82,6 +83,7 @@ export const EditAssignmentModal: React.FC<{
           <option value="Networks">Networks</option>
         </select>
       </label>
+      <button onClick={deleteAssignment}>Delete Assignment</button>
     </EditModalFrame>
   )
 }

@@ -6,7 +6,15 @@ export const AssignmentList: React.FC<{
   assignments: AssignmentLocation[]
   setEditing: (id: number, editing: boolean) => void
   updateAssignment: (id: number, assignment: Partial<Assignment>) => void
-}> = ({ assignments, updateAssignment, setEditing }) => {
+  createAssignment: () => void
+  deleteAssignment: (id: number) => void
+}> = ({
+  assignments,
+  updateAssignment,
+  setEditing,
+  createAssignment,
+  deleteAssignment,
+}) => {
   const { setNodeRef, isOver } = useDroppable({ id: "assignments" })
 
   return (
@@ -28,9 +36,15 @@ export const AssignmentList: React.FC<{
               updateAssignment={(updatedAssignment: Partial<Assignment>) => {
                 updateAssignment(assignment.id, updatedAssignment)
               }}
+              deleteAssignment={() => deleteAssignment(assignment.id)}
             />
           ))}
-        <button className="assignment-list-button">Create Assignment</button>
+        <button
+          className="assignment-list-button"
+          onClick={() => createAssignment()}
+        >
+          Create Assignment
+        </button>
         <button className="assignment-list-button">Refresh</button>
       </div>
     </div>

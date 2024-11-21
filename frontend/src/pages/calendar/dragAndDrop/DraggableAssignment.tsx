@@ -16,7 +16,14 @@ export const DraggableAssignment: React.FC<{
   updateAssignment: (assignment: Partial<Assignment>) => void
   setEditing: (editing: boolean) => void
   editing: boolean
-}> = ({ assignment, updateAssignment, editing, setEditing }) => {
+  deleteAssignment: () => void
+}> = ({
+  assignment,
+  updateAssignment,
+  editing,
+  setEditing,
+  deleteAssignment,
+}) => {
   const { id, title, className, minuteLength } = assignment
 
   const { attributes, listeners, setNodeRef, isDragging, setActivatorNodeRef } =
@@ -51,6 +58,7 @@ export const DraggableAssignment: React.FC<{
         updateAssignment={updateAssignment}
         hide={() => setEditing(false)}
         isShown={editing}
+        deleteAssignment={deleteAssignment}
       />
     </div>
   )
