@@ -1,5 +1,4 @@
 import { useDraggable } from "@dnd-kit/core"
-import { useState } from "react"
 import { EditAssignmentModal } from "../editModal/EditAssignmentModal"
 import { minutesToDisplayDate } from "../dates/dateUtils"
 
@@ -14,11 +13,11 @@ export interface Assignment {
 
 export const DraggableAssignment: React.FC<{
   assignment: Assignment
-  updateAssignment: (assignment: Assignment) => void
-}> = ({ assignment, updateAssignment }) => {
+  updateAssignment: (assignment: Partial<Assignment>) => void
+  setEditing: (editing: boolean) => void
+  editing: boolean
+}> = ({ assignment, updateAssignment, editing, setEditing }) => {
   const { id, title, className, minuteLength } = assignment
-
-  const [editing, setEditing] = useState(false)
 
   const { attributes, listeners, setNodeRef, isDragging, setActivatorNodeRef } =
     useDraggable({ id })
@@ -38,7 +37,7 @@ export const DraggableAssignment: React.FC<{
         style={{
           height: minuteLength,
         }}
-        onClick={() => setEditing((editing) => !editing)}
+        onClick={() => setEditing(!editing)}
         ref={setActivatorNodeRef}
       >
         <p className="title">{title}</p>

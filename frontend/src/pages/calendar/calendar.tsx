@@ -53,6 +53,7 @@ const TIME_PREFS: TimePreferences = {
 export interface AssignmentLocation {
   assignment: Assignment
   slotId: string
+  editing: boolean
 }
 
 const HomePage: React.FC = () => {
@@ -71,7 +72,7 @@ const HomePage: React.FC = () => {
     false
   )
 
-  const [assignmentMap, setAssignmentMap] = useState<AssignmentLocation[]>(
+  const [assignments, setAssignments] = useState<AssignmentLocation[]>(
     range(1, 6).map(
       (id): AssignmentLocation => ({
         slotId: "assignments",
@@ -83,9 +84,40 @@ const HomePage: React.FC = () => {
           id,
           minuteLength: 60,
         },
+        editing: false,
       })
     )
   )
+
+  const updateAssignment = (
+    id: number,
+    updatedAssignment: Partial<Assignment>
+  ) => {
+    setAssignments((assignments) =>
+      assignments.map((assignment) => {
+        if (assignment.assignment.id === id) {
+          return {
+            ...assignment,
+            assignment: { ...assignment.assignment, ...updatedAssignment },
+          }
+        } else {
+          return assignment
+        }
+      })
+    )
+  }
+
+  const setEditing = (id: number, editing: boolean) => {
+    setAssignments((assignments) =>
+      assignments.map((assignment) => {
+        if (assignment.assignment.id === id) {
+          return { ...assignment, editing }
+        } else {
+          return assignment
+        }
+      })
+    )
+  }
 
   const freeSlots = generateSlots(dates, events, TIME_PREFS)
 
@@ -110,20 +142,20 @@ const HomePage: React.FC = () => {
             cancelDrop={(args) => args.over === null}
             onDragStart={(event) =>
               setActiveAssignment(
-                assignmentMap.find(
+                assignments.find(
                   (location) => location.assignment.id === event.active.id
                 )!.assignment
               )
             }
             onDragEnd={(event) => {
-              const selectedAssignment = assignmentMap.find(
+              const selectedAssignment = assignments.find(
                 (location) => location.assignment.id === event.active.id
               )
 
-              console.log(assignmentMap)
+              console.log(assignments)
 
               if (event.over !== null) {
-                setAssignmentMap((map) => [
+                setAssignments((map) => [
                   ...map.filter(
                     (assignmentLocation) =>
                       assignmentLocation.assignment.id !==
@@ -132,6 +164,7 @@ const HomePage: React.FC = () => {
                   {
                     assignment: selectedAssignment!.assignment,
                     slotId: String(event.over!.id),
+                    editing: false,
                   },
                 ])
               }
@@ -177,14 +210,16 @@ const HomePage: React.FC = () => {
                 events={events}
                 setEvents={setEvents}
                 timePreferences={TIME_PREFS}
-                assignments={assignmentMap}
-                setAssignments={setAssignmentMap}
+                assignments={assignments}
+                setEditing={setEditing}
+                updateAssignment={updateAssignment}
                 freeSlots={freeSlots}
               />
             </div>
             <AssignmentList
-              assignments={assignmentMap}
-              setAssignments={setAssignmentMap}
+              assignments={assignments}
+              updateAssignment={updateAssignment}
+              setEditing={setEditing}
             />
 
             <DragOverlay dropAnimation={customDropAnimation}>

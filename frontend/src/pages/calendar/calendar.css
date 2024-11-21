@@ -207,6 +207,14 @@ body {
   background: #ffffffaa;
 }
 
+.assignment-list-button:last-of-type {
+  margin-top: auto;
+}
+
+.assignment-list-button {
+  font-weight: bold;
+}
+
 .assignment {
   z-index: 2;
   position: relative;
@@ -242,6 +250,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+}
+
+.assignment .class {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .assignment .size {

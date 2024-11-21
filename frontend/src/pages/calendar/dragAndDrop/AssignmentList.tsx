@@ -1,12 +1,12 @@
 import { useDroppable } from "@dnd-kit/core"
 import { AssignmentLocation } from "../calendar"
-import { DraggableAssignment } from "./DraggableAssignment"
-import { Dispatch, SetStateAction } from "react"
+import { Assignment, DraggableAssignment } from "./DraggableAssignment"
 
 export const AssignmentList: React.FC<{
   assignments: AssignmentLocation[]
-  setAssignments: Dispatch<SetStateAction<AssignmentLocation[]>>
-}> = ({ assignments, setAssignments }) => {
+  setEditing: (id: number, editing: boolean) => void
+  updateAssignment: (id: number, assignment: Partial<Assignment>) => void
+}> = ({ assignments, updateAssignment, setEditing }) => {
   const { setNodeRef, isOver } = useDroppable({ id: "assignments" })
 
   return (
@@ -19,26 +19,19 @@ export const AssignmentList: React.FC<{
       <div className={"assignments" + (isOver ? " over" : "")} ref={setNodeRef}>
         {assignments
           .filter((location) => location.slotId === "assignments")
-          .map(({ assignment }) => (
+          .map(({ assignment, editing }) => (
             <DraggableAssignment
               key={assignment.id}
               assignment={assignment}
-              updateAssignment={(updatedAssignment) => {
-                setAssignments((assignments) =>
-                  assignments.map((currentAssignment) => {
-                    if (currentAssignment.assignment.id === assignment.id) {
-                      return {
-                        slotId: currentAssignment.slotId,
-                        assignment: updatedAssignment,
-                      }
-                    } else {
-                      return currentAssignment
-                    }
-                  })
-                )
+              editing={editing}
+              setEditing={(editing) => setEditing(assignment.id, editing)}
+              updateAssignment={(updatedAssignment: Partial<Assignment>) => {
+                updateAssignment(assignment.id, updatedAssignment)
               }}
             />
           ))}
+        <button className="assignment-list-button">Create Assignment</button>
+        <button className="assignment-list-button">Refresh</button>
       </div>
     </div>
   )

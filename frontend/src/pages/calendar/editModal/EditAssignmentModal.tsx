@@ -6,9 +6,9 @@ export const EditAssignmentModal: React.FC<{
   isShown: boolean
   hide: () => void
   assignment: Assignment
-  updateAssignment: (assignment: Assignment) => void
+  updateAssignment: (assignment: Partial<Assignment>) => void
 }> = ({ isShown, hide, assignment, updateAssignment }) => {
-  const { title, minuteLength, priority, dueDate } = assignment
+  const { title, minuteLength, priority, dueDate, className } = assignment
 
   return (
     <EditModalFrame title="Edit Assignment" isShown={isShown} hide={hide}>
@@ -18,7 +18,7 @@ export const EditAssignmentModal: React.FC<{
           type="text"
           value={title}
           onChange={({ target: { value } }) => {
-            updateAssignment({ ...assignment, title: value })
+            updateAssignment({ title: value })
           }}
         />
       </label>
@@ -27,7 +27,7 @@ export const EditAssignmentModal: React.FC<{
         <select
           value={minuteLength}
           onChange={({ target: { value } }) => {
-            updateAssignment({ ...assignment, minuteLength: Number(value) })
+            updateAssignment({ minuteLength: Number(value) })
           }}
         >
           <option value="30">30 mins</option>
@@ -44,7 +44,6 @@ export const EditAssignmentModal: React.FC<{
           value={toISODate(dueDate)}
           onChange={({ target: { value } }) => {
             updateAssignment({
-              ...assignment,
               dueDate: new Date(value),
             })
           }}
@@ -60,7 +59,6 @@ export const EditAssignmentModal: React.FC<{
           className="slider"
           onChange={({ target: { value } }) => {
             updateAssignment({
-              ...assignment,
               priority: Number(value) as Assignment["priority"],
             })
           }}
@@ -73,7 +71,16 @@ export const EditAssignmentModal: React.FC<{
       </label>
       <label>
         Class
-        <input type="text" value={title} />
+        <select
+          value={className}
+          onChange={({ target: { value } }) => {
+            updateAssignment({ className: value })
+          }}
+        >
+          <option value="HCI">HCI</option>
+          <option value="ID">ID</option>
+          <option value="Networks">Networks</option>
+        </select>
       </label>
     </EditModalFrame>
   )

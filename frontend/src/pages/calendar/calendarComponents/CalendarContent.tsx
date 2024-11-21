@@ -10,6 +10,7 @@ import { Event, WorkBlock } from "../calendarTypes"
 import { TimePreferences } from "../slotAlgorithm/generateSlots"
 import { CalendarWorkSlots } from "./CalendarWorkSlots"
 import { AssignmentLocation } from "../calendar"
+import { Assignment } from "../dragAndDrop/DraggableAssignment"
 
 export const CalendarContent: React.FC<{
   setEvents: Dispatch<SetStateAction<Event[]>>
@@ -17,7 +18,8 @@ export const CalendarContent: React.FC<{
   dates: Date[]
   timePreferences: TimePreferences
   assignments: AssignmentLocation[]
-  setAssignments: Dispatch<SetStateAction<AssignmentLocation[]>>
+  updateAssignment: (id: number, assignment: Partial<Assignment>) => void
+  setEditing: (id: number, editing: boolean) => void
   freeSlots: WorkBlock[]
 }> = ({
   setEvents,
@@ -25,8 +27,9 @@ export const CalendarContent: React.FC<{
   dates,
   timePreferences,
   assignments,
-  setAssignments,
   freeSlots,
+  updateAssignment,
+  setEditing,
 }) => {
   const contentFrameRef = useRef<HTMLDivElement>(null)
 
@@ -62,10 +65,11 @@ export const CalendarContent: React.FC<{
       </DndContext>
       <CalendarWorkSlots
         assignments={assignments}
-        setAssignments={setAssignments}
+        updateAssignment={updateAssignment}
         dates={dates}
         freeSlots={freeSlots}
         timePreferences={timePreferences}
+        setEditing={setEditing}
       />
     </div>
   )
