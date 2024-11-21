@@ -1,25 +1,24 @@
 import "./calendar.css"
 import NavBar from "../../components/navBar/navBar"
-import { DndContext, Modifier, useDraggable } from "@dnd-kit/core"
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  pointerWithin,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core"
 import { useState } from "react"
-
-function* rangeGen(start: number, end: number) {
-  for (let num = start; num < end; num += 1) {
-    yield num
-  }
-}
-
-function range(start: number, end: number): number[] {
-  return Array.from(rangeGen(start, end))
-}
-
-function createSnapModifier(gridSizeX: number, gridSizeY: number): Modifier {
-  return ({ transform }) => ({
-    ...transform,
-    x: Math.ceil((transform.x - gridSizeX / 2) / gridSizeX) * gridSizeX,
-    y: Math.ceil((transform.y - gridSizeY / 2) / gridSizeY) * gridSizeY,
-  })
-}
+import { range } from "./range"
+import { Event } from "./calendarTypes"
+import { NavigationTabs } from "../../components/NavigationTabs"
+import { Assignment } from "./dragAndDrop/DraggableAssignment"
+import { snapCenterToCursor } from "@dnd-kit/modifiers"
+import { PlainAssignment } from "./dragAndDrop/PlainAssignment"
+import { AssignmentList } from "./dragAndDrop/AssignmentList"
+import { customDropAnimation } from "./dragAndDrop/customModifiers"
+import { generateSlots, TimePreferences } from "./slotAlgorithm/generateSlots"
+import { CalendarContent } from "./calendarComponents/CalendarContent"
 
 const initialEvents: Event[] = [
   {
@@ -42,86 +41,22 @@ const initialEvents: Event[] = [
   },
 ]
 
-interface Event {
-  name: string
-  start: Date
-  end: Date
-  id: number
+const TIME_PREFS: TimePreferences = {
+  displayStartHour: 9,
+  displayEndHour: 21,
+  workingStartHour: 10,
+  workingEndHour: 20,
+  minimumBlockSizeMinutes: 30,
+  transitionTimeMinutes: 10,
 }
 
-function roundToNearestInterval(value: number, interval: number) {
-  return Math.round(value / interval) * interval
-}
-
-const DraggableEvent: React.FC<{ event: Event; startOffsetHours: number }> = ({
-  event: { start, end, name, id },
-  startOffsetHours,
-}) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id,
-    })
-
-  const length = end.getTime() - start.getTime()
-
-  const startOfDayDate = new Date(start)
-  startOfDayDate.setHours(Math.floor(startOffsetHours))
-  startOfDayDate.setMinutes(
-    (startOffsetHours - Math.floor(startOffsetHours)) * 60
-  )
-  startOfDayDate.setSeconds(0)
-
-  return (
-    <div
-      ref={setNodeRef}
-      className="event"
-      {...listeners}
-      {...attributes}
-      style={{
-        height: length / 1000 / 60,
-        top: (start.getTime() - startOfDayDate.getTime()) / 1000 / 60,
-        transform: `translate(${transform?.x}px, ${transform?.y}px) scale(${
-          isDragging ? 1.05 : 1
-        })`,
-        boxShadow: `0px 0px ${isDragging ? 10 : 0}px 0px purple`,
-        zIndex: isDragging ? 1 : 0,
-      }}
-    >
-      <p>{name}</p>
-    </div>
-  )
-}
-
-const millisPerDay = (1000 * 60 * 60 * 24) / 150
-
-function updateTimeFromCoordDelta(
-  deltaX: number,
-  deltaY: number,
-  event: Event
-  // startOfDayDate: Date
-): Event {
-  const { start, end } = event
-
-  const newStart = start.getTime() + deltaY * 1000 * 60 + deltaX * millisPerDay
-  const newStartDate = new Date(newStart)
-  newStartDate.setMinutes(roundToNearestInterval(newStartDate.getMinutes(), 15))
-
-  const newEnd = end.getTime() + deltaY * 1000 * 60 + deltaX * millisPerDay
-  const newEndDate = new Date(newEnd)
-  newEndDate.setMinutes(roundToNearestInterval(newEndDate.getMinutes(), 15))
-
-  // const verticalPos = (start.getTime() - startOfDayDate.getTime()) / 1000 / 60
-
-  return {
-    ...event,
-    start: newStartDate,
-    end: newEndDate,
-  }
+export interface AssignmentLocation {
+  assignment: Assignment
+  slotId: string
+  editing: boolean
 }
 
 const HomePage: React.FC = () => {
-  const [events, setEvents] = useState(initialEvents)
-
   const dates = Array(7)
     .fill(0)
     .map(
@@ -131,84 +66,203 @@ const HomePage: React.FC = () => {
         )
     )
 
+  const [events, setEvents] = useState(initialEvents)
+
+  const [activeAssignment, setActiveAssignment] = useState<Assignment | false>(
+    false
+  )
+
+  const [assignments, setAssignments] = useState<AssignmentLocation[]>(
+    range(1, 6).map(
+      (id): AssignmentLocation => ({
+        slotId: "assignments",
+        assignment: {
+          className: "HCI",
+          title: "Project Proposal " + id,
+          priority: 0,
+          dueDate: new Date("2024-11-22 00:00"),
+          id,
+          minuteLength: 60,
+        },
+        editing: false,
+      })
+    )
+  )
+
+  const updateAssignment = (
+    id: number,
+    updatedAssignment: Partial<Assignment>
+  ) => {
+    setAssignments((assignments) =>
+      assignments.map((assignment) => {
+        if (assignment.assignment.id === id) {
+          return {
+            ...assignment,
+            assignment: { ...assignment.assignment, ...updatedAssignment },
+          }
+        } else {
+          return assignment
+        }
+      })
+    )
+  }
+
+  const setEditing = (id: number, editing: boolean) => {
+    setAssignments((assignments) =>
+      assignments.map((assignment) => {
+        if (assignment.assignment.id === id) {
+          return { ...assignment, editing }
+        } else if (assignment.editing) {
+          return { ...assignment, editing: false }
+        } else {
+          return assignment
+        }
+      })
+    )
+  }
+
+  const createAssignment = () => {
+    const newId = assignments[assignments.length - 1].assignment.id + 1
+
+    setAssignments((assignments) => [
+      ...assignments,
+      {
+        editing: true,
+        slotId: "assignments",
+        assignment: {
+          className: "HCI",
+          dueDate: new Date(),
+          id: newId,
+          minuteLength: 60,
+          priority: 0,
+          title: "New Assignment",
+        },
+      },
+    ])
+    setEditing(newId, true)
+  }
+
+  const deleteAssignment = (id: number) => {
+    setAssignments((assignments) =>
+      assignments.filter((assignment) => assignment.assignment.id !== id)
+    )
+  }
+
+  const freeSlots = generateSlots(dates, events, TIME_PREFS)
+
+  const assignmentSensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  )
+
   return (
-    <DndContext
-      modifiers={[createSnapModifier(150, 15)]}
-      autoScroll={false}
-      onDragEnd={(draggedEvent) => {
-        setEvents(
-          events.map((event) => {
-            if (event.id === draggedEvent.active.id) {
-              return updateTimeFromCoordDelta(
-                draggedEvent.delta.x,
-                draggedEvent.delta.y,
-                event,
-                new Date()
+    <div>
+      <NavBar />
+      <div className="center-container">
+        <NavigationTabs />
+        <div className="calendar-side">
+          <DndContext
+            collisionDetection={pointerWithin}
+            sensors={assignmentSensors}
+            modifiers={[snapCenterToCursor]}
+            cancelDrop={(args) => args.over === null}
+            onDragStart={(event) =>
+              setActiveAssignment(
+                assignments.find(
+                  (location) => location.assignment.id === event.active.id
+                )!.assignment
               )
             }
-            return event
-          })
-        )
-      }}
-    >
-      <div>
-        <NavBar />
-        <div className="center-container">
-          <div className="navigation-tabs">
-            <a href="/calendar" className="active">
-              Calendar
-            </a>
-            <a href="/optimizations">Optimizations</a>
-            <a href="/insights">Insights</a>
-          </div>
+            onDragEnd={(event) => {
+              const selectedAssignment = assignments.find(
+                (location) => location.assignment.id === event.active.id
+              )
 
-          <div className="content-frame">
-            <div className="calendar-dates">
-              {dates.map((sourceDate) => {
-                const month = sourceDate.toLocaleDateString("en-us", {
-                  month: "short",
-                })
-                const dayOfTheWeek = sourceDate.toLocaleDateString("en-us", {
-                  weekday: "long",
-                })
-                const date = sourceDate.getDate()
+              console.log(assignments)
+
+              if (event.over !== null) {
+                setAssignments((map) => [
+                  ...map.filter(
+                    (assignmentLocation) =>
+                      assignmentLocation.assignment.id !==
+                      Number(event.active.id)
+                  ),
+                  {
+                    assignment: selectedAssignment!.assignment,
+                    slotId: String(event.over!.id),
+                    editing: false,
+                  },
+                ])
+              }
+            }}
+          >
+            <div className="time-labels">
+              {range(
+                TIME_PREFS.displayStartHour,
+                TIME_PREFS.displayEndHour + 1
+              ).map((hour) => {
+                const dayPeriod = hour < 12 ? "am" : "pm"
+                const convertedHour = hour === 12 ? 12 : hour % 12
+
                 return (
-                  <div key={sourceDate.getTime()}>
-                    <p>{month}</p>
-                    <p>{date}</p>
-                    <p>{dayOfTheWeek}</p>
-                  </div>
+                  <p>
+                    {convertedHour}
+                    {dayPeriod}
+                  </p>
                 )
               })}
             </div>
-            <div className="calendar-body">
-              {dates.map((date) => {
-                // TODO: make this check more robust
-                const eventsForDay = events.filter(
-                  ({ start }) => start.getDate() === date.getDate()
-                )
-
-                return (
-                  <div key={date.getTime()} className="day-column">
-                    {range(9, 21).map((num) => (
-                      <div key={num} className="calendar-background-cell"></div>
-                    ))}
-                    {eventsForDay.map((event) => (
-                      <DraggableEvent
-                        event={event}
-                        key={event.start.getTime()}
-                        startOffsetHours={9}
-                      />
-                    ))}
-                  </div>
-                )
-              })}
+            <div className="content-frame">
+              <div className="calendar-dates">
+                {dates.map((sourceDate) => {
+                  const month = sourceDate.toLocaleDateString("en-us", {
+                    month: "short",
+                  })
+                  const dayOfTheWeek = sourceDate.toLocaleDateString("en-us", {
+                    weekday: "long",
+                  })
+                  const date = sourceDate.getDate()
+                  return (
+                    <div key={sourceDate.getTime()}>
+                      <p>{month}</p>
+                      <p>{date}</p>
+                      <p>{dayOfTheWeek}</p>
+                    </div>
+                  )
+                })}
+              </div>
+              <CalendarContent
+                dates={dates}
+                events={events}
+                setEvents={setEvents}
+                timePreferences={TIME_PREFS}
+                assignments={assignments}
+                setEditing={setEditing}
+                updateAssignment={updateAssignment}
+                deleteAssignment={deleteAssignment}
+                freeSlots={freeSlots}
+              />
             </div>
-          </div>
-          <h1>TBD -- not done yet</h1>
+            <AssignmentList
+              assignments={assignments}
+              updateAssignment={updateAssignment}
+              setEditing={setEditing}
+              deleteAssignment={deleteAssignment}
+              createAssignment={createAssignment}
+            />
+
+            <DragOverlay dropAnimation={customDropAnimation}>
+              {activeAssignment && (
+                <PlainAssignment assignment={activeAssignment} />
+              )}
+            </DragOverlay>
+          </DndContext>
         </div>
       </div>
-    </DndContext>
+    </div>
   )
 }
 
