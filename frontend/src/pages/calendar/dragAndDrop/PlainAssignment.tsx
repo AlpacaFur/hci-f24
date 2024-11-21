@@ -1,3 +1,4 @@
+import { minutesToDisplayDate } from "../dates/dateUtils"
 import { Assignment } from "./DraggableAssignment"
 
 export const PlainAssignment: React.FC<{ assignment: Assignment }> = ({
@@ -12,7 +13,7 @@ export const PlainAssignment: React.FC<{ assignment: Assignment }> = ({
         <p className="title">{title}</p>
         <div>
           <p className="class">{className}</p>
-          <p className="size">{minuteLength}</p>
+          <p className="size">{minutesToDisplayDate(minuteLength)}</p>
         </div>
       </div>
     </div>

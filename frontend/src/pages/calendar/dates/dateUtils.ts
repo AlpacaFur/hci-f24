@@ -79,3 +79,11 @@ export function toISODate(date: Date) {
     "0"
   )}-${String(date.getDate() + 1).padStart(2, "0")}`
 }
+
+export function minutesToDisplayDate(minutes: number) {
+  if (minutes < 60) {
+    return `${minutes}m`
+  } else {
+    return `${minutes / 60}h`
+  }
+}

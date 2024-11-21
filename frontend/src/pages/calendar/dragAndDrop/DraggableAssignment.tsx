@@ -1,6 +1,7 @@
 import { useDraggable } from "@dnd-kit/core"
 import { useState } from "react"
 import { EditAssignmentModal } from "../editModal/EditAssignmentModal"
+import { minutesToDisplayDate } from "../dates/dateUtils"
 
 export interface Assignment {
   title: string
@@ -43,7 +44,7 @@ export const DraggableAssignment: React.FC<{
         <p className="title">{title}</p>
         <div>
           <p className="class">{className}</p>
-          <p className="size">{minuteLength}</p>
+          <p className="size">{minutesToDisplayDate(minuteLength)}</p>
         </div>
       </div>
       <EditAssignmentModal
