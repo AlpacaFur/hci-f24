@@ -44,10 +44,38 @@ const initialEvents: Event[] = [
 const TIME_PREFS: TimePreferences = {
   displayStartHour: 9,
   displayEndHour: 21,
-  workingStartHour: 10,
-  workingEndHour: 20,
   minimumBlockSizeMinutes: 30,
   transitionTimeMinutes: 10,
+  workingHours: {
+    0: {
+      start: 10,
+      end: 17,
+    },
+    1: {
+      start: 11,
+      end: 20,
+    },
+    2: {
+      start: 10,
+      end: 20,
+    },
+    3: {
+      start: 10,
+      end: 20,
+    },
+    4: {
+      start: 10,
+      end: 20,
+    },
+    5: {
+      start: 10,
+      end: 20,
+    },
+    6: {
+      start: 10,
+      end: 17,
+    },
+  },
 }
 
 export interface AssignmentLocation {
