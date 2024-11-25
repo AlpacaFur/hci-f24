@@ -4,7 +4,7 @@ import {
   getMinuteDifference,
   getStartOfDayTime,
 } from "../dates/dateUtils"
-import { TimePreferences } from "../hooks/useTimePrefs"
+import { TimePreferences } from "../hooks/useTimePreferences"
 
 export const generateSlots = (
   dates: Date[],

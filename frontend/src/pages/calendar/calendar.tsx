@@ -20,7 +20,7 @@ import { generateSlots } from "./slotAlgorithm/generateSlots"
 import { CalendarContent } from "./calendarComponents/CalendarContent"
 import { useAssignmentStorage } from "./hooks/useAssignments"
 import { useEvents } from "./hooks/useEvents"
-import { useTimePreferences } from "./hooks/useTimePrefs"
+import { useTimePreferences } from "./hooks/useTimePreferences"
 
 export interface AssignmentLocation {
   assignment: Assignment
