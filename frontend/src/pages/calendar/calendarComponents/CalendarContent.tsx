@@ -7,7 +7,7 @@ import {
 import { CalendarEvents } from "./CalendarEvents"
 import { Dispatch, SetStateAction, useRef } from "react"
 import { Event, WorkBlock } from "../calendarTypes"
-import { TimePreferences } from "../slotAlgorithm/generateSlots"
+import { TimePreferences } from "../hooks/useTimePrefs"
 import { CalendarWorkSlots } from "./CalendarWorkSlots"
 import { AssignmentLocation } from "../calendar"
 import { Assignment } from "../dragAndDrop/DraggableAssignment"

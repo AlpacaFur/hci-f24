@@ -4,22 +4,7 @@ import {
   getMinuteDifference,
   getStartOfDayTime,
 } from "../dates/dateUtils"
-
-export interface TimePreferences {
-  displayStartHour: number
-  displayEndHour: number
-  minimumBlockSizeMinutes: number
-  transitionTimeMinutes: number
-  workingHours: {
-    0: { start: number; end: number }
-    1: { start: number; end: number }
-    2: { start: number; end: number }
-    3: { start: number; end: number }
-    4: { start: number; end: number }
-    5: { start: number; end: number }
-    6: { start: number; end: number }
-  }
-}
+import { TimePreferences } from "../hooks/useTimePrefs"
 
 export const generateSlots = (
   dates: Date[],

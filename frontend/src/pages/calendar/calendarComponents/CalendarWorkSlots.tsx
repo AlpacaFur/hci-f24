@@ -5,7 +5,7 @@ import {
   DraggableAssignment,
 } from "../dragAndDrop/DraggableAssignment"
 import { DroppableTimeSlot } from "../dragAndDrop/DroppableTimeSlot"
-import { TimePreferences } from "../slotAlgorithm/generateSlots"
+import { TimePreferences } from "../hooks/useTimePrefs"
 
 export const CalendarWorkSlots: React.FC<{
   freeSlots: WorkBlock[]

@@ -1,6 +1,6 @@
 import { forwardRef } from "react"
 import { Event } from "../calendarTypes"
-import { TimePreferences } from "../slotAlgorithm/generateSlots"
+import { TimePreferences } from "../hooks/useTimePrefs"
 import { DraggableEvent } from "../dragAndDrop/DraggableEvent"
 import { range } from "../range"
 
