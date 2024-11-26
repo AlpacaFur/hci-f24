@@ -45,7 +45,7 @@ export const useRefreshingLocalStorage = <T>(
   key: string,
   schema: z.ZodSchema<T>,
   initialValue: T,
-  checkInterval: number = 1000
+  checkInterval: number = 500
 ): [T, Dispatch<SetStateAction<T>>] => {
   const [value, setValue] = useState<T>(initialValue)
   const lastDeserializedValue = useRef(JSON.stringify(value))
