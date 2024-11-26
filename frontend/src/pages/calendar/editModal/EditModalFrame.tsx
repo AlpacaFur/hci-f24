@@ -13,7 +13,7 @@ export const EditModalFrame: React.FC<
             event.preventDefault()
           }}
         >
-          ✗
+          ✓
         </button>
       </div>
       <div className="content">{children}</div>

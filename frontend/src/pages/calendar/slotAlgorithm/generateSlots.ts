@@ -4,35 +4,29 @@ import {
   getMinuteDifference,
   getStartOfDayTime,
 } from "../dates/dateUtils"
-
-export interface TimePreferences {
-  displayStartHour: number
-  displayEndHour: number
-  workingStartHour: number
-  workingEndHour: number
-  minimumBlockSizeMinutes: number
-  transitionTimeMinutes: number
-}
+import { TimePreferences } from "../hooks/useTimePreferences"
 
 export const generateSlots = (
   dates: Date[],
   events: Event[],
   {
-    workingStartHour,
-    workingEndHour,
     transitionTimeMinutes,
     minimumBlockSizeMinutes,
+    workingHours: allWorkingHours,
   }: TimePreferences
 ): WorkBlock[] => {
   const newFreeSlots: WorkBlock[] = []
   let id = 0
   dates.forEach((date) => {
+    const workingHours =
+      allWorkingHours[date.getDay() as keyof TimePreferences["workingHours"]]
+
     const eventsOnDate = events.filter(
       (event) => event.start.getDate() === date.getDate()
     )
     eventsOnDate.sort((a, b) => a.start.getTime() - b.start.getTime())
-    const startOfDayDate = getStartOfDayTime(date, workingStartHour)
-    const endOfDayDate = getStartOfDayTime(date, workingEndHour)
+    const startOfDayDate = getStartOfDayTime(date, workingHours.start)
+    const endOfDayDate = getStartOfDayTime(date, workingHours.end)
 
     eventsOnDate.forEach((event, index) => {
       if (index === 0) {

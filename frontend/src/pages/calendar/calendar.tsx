@@ -10,145 +10,46 @@ import {
 } from "@dnd-kit/core"
 import { useState } from "react"
 import { range } from "./range"
-import { Event } from "./calendarTypes"
 import { NavigationTabs } from "../../components/NavigationTabs"
 import { Assignment } from "./dragAndDrop/DraggableAssignment"
 import { snapCenterToCursor } from "@dnd-kit/modifiers"
 import { PlainAssignment } from "./dragAndDrop/PlainAssignment"
 import { AssignmentList } from "./dragAndDrop/AssignmentList"
 import { customDropAnimation } from "./dragAndDrop/customModifiers"
-import { generateSlots, TimePreferences } from "./slotAlgorithm/generateSlots"
+import { generateSlots } from "./slotAlgorithm/generateSlots"
 import { CalendarContent } from "./calendarComponents/CalendarContent"
+import { useAssignmentStorage } from "./hooks/useAssignments"
+import { useEvents } from "./hooks/useEvents"
+import { useTimePreferences } from "./hooks/useTimePreferences"
 
-const initialEvents: Event[] = [
-  {
-    name: "Cool Event",
-    start: new Date("2024-11-12 15:30"),
-    end: new Date("2024-11-12 18:30"),
-    id: 1,
-  },
-  {
-    name: "Cool Event 2",
-    start: new Date("2024-11-13 09:30"),
-    end: new Date("2024-11-13 10:30"),
-    id: 2,
-  },
-  {
-    name: "Cool Event 3",
-    start: new Date("2024-11-15 13:30"),
-    end: new Date("2024-11-15 14:30"),
-    id: 3,
-  },
-]
-
-const TIME_PREFS: TimePreferences = {
-  displayStartHour: 9,
-  displayEndHour: 21,
-  workingStartHour: 10,
-  workingEndHour: 20,
-  minimumBlockSizeMinutes: 30,
-  transitionTimeMinutes: 10,
-}
-
-export interface AssignmentLocation {
-  assignment: Assignment
-  slotId: string
-  editing: boolean
-}
+const DATES = Array(7)
+  .fill(0)
+  .map(
+    (_, index) =>
+      new Date(
+        new Date("2024-11-11 00:00").getTime() + index * 1000 * 60 * 60 * 24
+      )
+  )
 
 const HomePage: React.FC = () => {
-  const dates = Array(7)
-    .fill(0)
-    .map(
-      (_, index) =>
-        new Date(
-          new Date("2024-11-11 00:00").getTime() + index * 1000 * 60 * 60 * 24
-        )
-    )
-
-  const [events, setEvents] = useState(initialEvents)
+  const [events, setEvents] = useEvents()
 
   const [activeAssignment, setActiveAssignment] = useState<Assignment | false>(
     false
   )
 
-  const [assignments, setAssignments] = useState<AssignmentLocation[]>(
-    range(1, 6).map(
-      (id): AssignmentLocation => ({
-        slotId: "assignments",
-        assignment: {
-          className: "HCI",
-          title: "Project Proposal " + id,
-          priority: 0,
-          dueDate: new Date("2024-11-22 00:00"),
-          id,
-          minuteLength: 60,
-        },
-        editing: false,
-      })
-    )
-  )
+  const {
+    assignments,
+    updateAssignment,
+    deleteAssignment,
+    createAssignment,
+    setEditing,
+    moveAssignment,
+  } = useAssignmentStorage()
 
-  const updateAssignment = (
-    id: number,
-    updatedAssignment: Partial<Assignment>
-  ) => {
-    setAssignments((assignments) =>
-      assignments.map((assignment) => {
-        if (assignment.assignment.id === id) {
-          return {
-            ...assignment,
-            assignment: { ...assignment.assignment, ...updatedAssignment },
-          }
-        } else {
-          return assignment
-        }
-      })
-    )
-  }
+  const [timePreferences] = useTimePreferences()
 
-  const setEditing = (id: number, editing: boolean) => {
-    setAssignments((assignments) =>
-      assignments.map((assignment) => {
-        if (assignment.assignment.id === id) {
-          return { ...assignment, editing }
-        } else if (assignment.editing) {
-          return { ...assignment, editing: false }
-        } else {
-          return assignment
-        }
-      })
-    )
-  }
-
-  const createAssignment = () => {
-    const newId = assignments[assignments.length - 1].assignment.id + 1
-
-    setAssignments((assignments) => [
-      ...assignments,
-      {
-        editing: true,
-        slotId: "assignments",
-        assignment: {
-          className: "HCI",
-          dueDate: new Date(),
-          id: newId,
-          minuteLength: 60,
-          priority: 0,
-          title: "New Assignment",
-        },
-      },
-    ])
-    setEditing(newId, true)
-  }
-
-  const deleteAssignment = (id: number) => {
-    setAssignments((assignments) =>
-      assignments.filter((assignment) => assignment.assignment.id !== id)
-    )
-  }
-
-  const freeSlots = generateSlots(dates, events, TIME_PREFS)
+  const freeSlots = generateSlots(DATES, events, timePreferences)
 
   const assignmentSensors = useSensors(
     useSensor(PointerSensor, {
@@ -177,32 +78,16 @@ const HomePage: React.FC = () => {
               )
             }
             onDragEnd={(event) => {
-              const selectedAssignment = assignments.find(
-                (location) => location.assignment.id === event.active.id
-              )
-
-              console.log(assignments)
-
               if (event.over !== null) {
-                setAssignments((map) => [
-                  ...map.filter(
-                    (assignmentLocation) =>
-                      assignmentLocation.assignment.id !==
-                      Number(event.active.id)
-                  ),
-                  {
-                    assignment: selectedAssignment!.assignment,
-                    slotId: String(event.over!.id),
-                    editing: false,
-                  },
-                ])
+                moveAssignment(Number(event.active.id), String(event.over.id))
               }
+              setActiveAssignment(false)
             }}
           >
             <div className="time-labels">
               {range(
-                TIME_PREFS.displayStartHour,
-                TIME_PREFS.displayEndHour + 1
+                timePreferences.displayStartHour,
+                timePreferences.displayEndHour + 1
               ).map((hour) => {
                 const dayPeriod = hour < 12 ? "am" : "pm"
                 const convertedHour = hour === 12 ? 12 : hour % 12
@@ -217,7 +102,7 @@ const HomePage: React.FC = () => {
             </div>
             <div className="content-frame">
               <div className="calendar-dates">
-                {dates.map((sourceDate) => {
+                {DATES.map((sourceDate) => {
                   const month = sourceDate.toLocaleDateString("en-us", {
                     month: "short",
                   })
@@ -235,10 +120,10 @@ const HomePage: React.FC = () => {
                 })}
               </div>
               <CalendarContent
-                dates={dates}
+                dates={DATES}
                 events={events}
                 setEvents={setEvents}
-                timePreferences={TIME_PREFS}
+                timePreferences={timePreferences}
                 assignments={assignments}
                 setEditing={setEditing}
                 updateAssignment={updateAssignment}
