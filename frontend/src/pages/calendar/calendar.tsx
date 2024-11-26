@@ -22,23 +22,17 @@ import { useAssignmentStorage } from "./hooks/useAssignments"
 import { useEvents } from "./hooks/useEvents"
 import { useTimePreferences } from "./hooks/useTimePreferences"
 
-export interface AssignmentLocation {
-  assignment: Assignment
-  slotId: string
-  editing: boolean
-}
+const DATES = Array(7)
+  .fill(0)
+  .map(
+    (_, index) =>
+      new Date(
+        new Date("2024-11-11 00:00").getTime() + index * 1000 * 60 * 60 * 24
+      )
+  )
 
 const HomePage: React.FC = () => {
-  const dates = Array(7)
-    .fill(0)
-    .map(
-      (_, index) =>
-        new Date(
-          new Date("2024-11-11 00:00").getTime() + index * 1000 * 60 * 60 * 24
-        )
-    )
-
-  const { events, setEvents } = useEvents()
+  const [events, setEvents] = useEvents()
 
   const [activeAssignment, setActiveAssignment] = useState<Assignment | false>(
     false
@@ -53,9 +47,9 @@ const HomePage: React.FC = () => {
     moveAssignment,
   } = useAssignmentStorage()
 
-  const timePreferences = useTimePreferences()
+  const [timePreferences] = useTimePreferences()
 
-  const freeSlots = generateSlots(dates, events, timePreferences)
+  const freeSlots = generateSlots(DATES, events, timePreferences)
 
   const assignmentSensors = useSensors(
     useSensor(PointerSensor, {
@@ -108,7 +102,7 @@ const HomePage: React.FC = () => {
             </div>
             <div className="content-frame">
               <div className="calendar-dates">
-                {dates.map((sourceDate) => {
+                {DATES.map((sourceDate) => {
                   const month = sourceDate.toLocaleDateString("en-us", {
                     month: "short",
                   })
@@ -126,7 +120,7 @@ const HomePage: React.FC = () => {
                 })}
               </div>
               <CalendarContent
-                dates={dates}
+                dates={DATES}
                 events={events}
                 setEvents={setEvents}
                 timePreferences={timePreferences}

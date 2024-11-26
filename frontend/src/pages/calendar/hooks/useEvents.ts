@@ -1,5 +1,15 @@
-import { useState } from "react"
 import { Event } from "../calendarTypes"
+import { z } from "zod"
+import { useRefreshingLocalStorage } from "./useRefreshingLocalStorage"
+
+const eventsSchema = z.array(
+  z.object({
+    name: z.string(),
+    start: z.coerce.date(),
+    end: z.coerce.date(),
+    id: z.number(),
+  })
+)
 
 const initialEvents: Event[] = [
   {
@@ -23,7 +33,9 @@ const initialEvents: Event[] = [
 ]
 
 export const useEvents = () => {
-  const [events, setEvents] = useState(initialEvents)
-
-  return { events, setEvents }
+  return useRefreshingLocalStorage(
+    "earlybird-events",
+    eventsSchema,
+    initialEvents
+  )
 }
