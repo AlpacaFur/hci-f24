@@ -7,7 +7,7 @@ const NavBar = () => {
       <ul className="nav-links">
         <li>
           <NavLink
-            to="/profilePage"
+            to="/profile-page"
             className={({ isActive }) => (isActive ? "active" : "")}
           >
             Your Profile
