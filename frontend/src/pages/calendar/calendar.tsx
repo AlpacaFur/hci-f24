@@ -11,7 +11,7 @@ import {
 import { useState } from "react"
 import { range } from "./range"
 import { NavigationTabs } from "../../components/NavigationTabs"
-import { Assignment } from "./dragAndDrop/DraggableAssignment"
+import { Assignment } from "./dragAndDrop/DraggableAssignment/DraggableAssignment"
 import { snapCenterToCursor } from "@dnd-kit/modifiers"
 import { PlainAssignment } from "./dragAndDrop/PlainAssignment"
 import { AssignmentList } from "./dragAndDrop/AssignmentList"
@@ -93,7 +93,7 @@ const HomePage: React.FC = () => {
                 const convertedHour = hour === 12 ? 12 : hour % 12
 
                 return (
-                  <p>
+                  <p key={convertedHour + dayPeriod}>
                     {convertedHour}
                     {dayPeriod}
                   </p>

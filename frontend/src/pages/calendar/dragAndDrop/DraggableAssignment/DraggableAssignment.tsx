@@ -1,6 +1,8 @@
 import { useDraggable } from "@dnd-kit/core"
-import { EditAssignmentModal } from "../editModal/EditAssignmentModal"
-import { minutesToDisplayDate } from "../dates/dateUtils"
+import { EditAssignmentModal } from "../../editModal/EditAssignmentModal"
+import { minutesToDisplayDate } from "../../dates/dateUtils"
+import { useLayoutEffect, useState } from "react"
+import "./DraggableAssignment.css"
 
 export interface Assignment {
   title: string
@@ -17,17 +19,45 @@ export const DraggableAssignment: React.FC<{
   setEditing: (editing: boolean) => void
   editing: boolean
   deleteAssignment: () => void
+  locationKey: number
 }> = ({
   assignment,
   updateAssignment,
   editing,
   setEditing,
   deleteAssignment,
+  locationKey,
 }) => {
   const { id, title, className, minuteLength } = assignment
 
-  const { attributes, listeners, setNodeRef, isDragging, setActivatorNodeRef } =
-    useDraggable({ id })
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    isDragging,
+    setActivatorNodeRef,
+    node,
+  } = useDraggable({ id })
+
+  const [side, setSide] = useState<"left" | "right">("left")
+  const [verticalAlign, setVerticalAlign] = useState<"top" | "bottom">("top")
+
+  useLayoutEffect(() => {
+    if (node.current !== null) {
+      const rect = node.current.getBoundingClientRect()
+      if (rect.x <= 300) {
+        setSide("right")
+      } else {
+        setSide("left")
+      }
+
+      if (rect.y >= 500) {
+        setVerticalAlign("bottom")
+      } else {
+        setVerticalAlign("top")
+      }
+    }
+  }, [node, locationKey])
 
   return (
     <div
@@ -59,6 +89,8 @@ export const DraggableAssignment: React.FC<{
         hide={() => setEditing(false)}
         isShown={editing}
         deleteAssignment={deleteAssignment}
+        side={side}
+        verticalAlign={verticalAlign}
       />
     </div>
   )

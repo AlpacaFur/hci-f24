@@ -1,5 +1,5 @@
 import { minutesToDisplayDate } from "../dates/dateUtils"
-import { Assignment } from "./DraggableAssignment"
+import { Assignment } from "./DraggableAssignment/DraggableAssignment"
 
 export const PlainAssignment: React.FC<{ assignment: Assignment }> = ({
   assignment: { title, className, minuteLength },

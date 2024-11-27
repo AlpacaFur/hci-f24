@@ -51,7 +51,6 @@ export const useRefreshingLocalStorage = <T>(
   const lastDeserializedValue = useRef(JSON.stringify(value))
 
   const syncLocalStorage = useCallback(() => {
-    console.log("running")
     const currentLocalValue = localStorage.getItem(key)
 
     if (currentLocalValue === null) {
