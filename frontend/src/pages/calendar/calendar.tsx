@@ -45,11 +45,13 @@ const HomePage: React.FC = () => {
     createAssignment,
     setEditing,
     moveAssignment,
+    autoScheduleAssignments,
+    unscheduleAll,
   } = useAssignmentStorage()
 
   const [timePreferences] = useTimePreferences()
 
-  const freeSlots = generateSlots(DATES, events, timePreferences)
+  const workBlocks = generateSlots(DATES, events, timePreferences)
 
   const assignmentSensors = useSensors(
     useSensor(PointerSensor, {
@@ -128,7 +130,7 @@ const HomePage: React.FC = () => {
                 setEditing={setEditing}
                 updateAssignment={updateAssignment}
                 deleteAssignment={deleteAssignment}
-                freeSlots={freeSlots}
+                freeSlots={workBlocks}
               />
             </div>
             <AssignmentList
@@ -137,6 +139,10 @@ const HomePage: React.FC = () => {
               setEditing={setEditing}
               deleteAssignment={deleteAssignment}
               createAssignment={createAssignment}
+              autoScheduleAssignments={() =>
+                autoScheduleAssignments(workBlocks)
+              }
+              unscheduleAll={unscheduleAll}
             />
 
             <DragOverlay dropAnimation={customDropAnimation}>

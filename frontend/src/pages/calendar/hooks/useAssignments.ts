@@ -1,6 +1,9 @@
 import { range } from "../range"
 import { z } from "zod"
 import { useRefreshingLocalStorage } from "./useRefreshingLocalStorage"
+import { autoScheduleAssignments } from "../slotAlgorithm/autoSchedule"
+import { WorkBlock } from "../calendarTypes"
+import { ASSIGNMENT_LIST_SLOT_ID } from "../dragAndDrop/AssignmentList"
 
 const assignmentSchema = z.object({
   title: z.string(),
@@ -117,6 +120,21 @@ export const useAssignmentStorage = () => {
     )
   }
 
+  const unscheduleAll = () => {
+    setAssignments((assignments) =>
+      assignments.map((assignment) => ({
+        ...assignment,
+        slotId: ASSIGNMENT_LIST_SLOT_ID,
+      }))
+    )
+  }
+
+  const autoScheduleAssignmentsCallback = (workBlocks: WorkBlock[]) => {
+    setAssignments((assignments) =>
+      autoScheduleAssignments(assignments, workBlocks)
+    )
+  }
+
   const [assignments, setAssignments] = useRefreshingLocalStorage(
     "earlybird-assignments",
     assignmentsSchema,
@@ -130,5 +148,7 @@ export const useAssignmentStorage = () => {
     createAssignment,
     deleteAssignment,
     moveAssignment,
+    autoScheduleAssignments: autoScheduleAssignmentsCallback,
+    unscheduleAll,
   }
 }
