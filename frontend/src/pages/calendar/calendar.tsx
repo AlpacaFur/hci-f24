@@ -93,7 +93,7 @@ const HomePage: React.FC = () => {
                 const convertedHour = hour === 12 ? 12 : hour % 12
 
                 return (
-                  <p>
+                  <p key={convertedHour + dayPeriod}>
                     {convertedHour}
                     {dayPeriod}
                   </p>
