@@ -1,10 +1,10 @@
-import { AssignmentLocation } from "../calendar"
 import { WorkBlock } from "../calendarTypes"
 import {
   Assignment,
   DraggableAssignment,
-} from "../dragAndDrop/DraggableAssignment"
+} from "../dragAndDrop/DraggableAssignment/DraggableAssignment"
 import { DroppableTimeSlot } from "../dragAndDrop/DroppableTimeSlot"
+import { AssignmentLocation } from "../hooks/useAssignments"
 import { TimePreferences } from "../hooks/useTimePreferences"
 
 export const CalendarWorkSlots: React.FC<{
@@ -32,21 +32,34 @@ export const CalendarWorkSlots: React.FC<{
           ({ start }) => start.getDate() === date.getDate()
         )
 
+        const editing = assignments.some(
+          (assignment: AssignmentLocation) =>
+            assignment.editing &&
+            workBlocksForDay.some(
+              (workBlock) => Number(assignment.slotId) === workBlock.id
+            )
+        )
+
         return (
-          <div key={date.getTime()} className="day-column">
-            {workBlocksForDay.map((event) => (
+          <div
+            key={date.getTime()}
+            className={"day-column" + (editing ? " editing" : "")}
+          >
+            {workBlocksForDay.map((workBlock) => (
               <DroppableTimeSlot
-                key={event.id}
+                key={workBlock.id}
                 workBlock={{
-                  start: event.start,
-                  end: event.end,
-                  id: event.id,
+                  start: workBlock.start,
+                  end: workBlock.end,
+                  id: workBlock.id,
                 }}
                 startOffsetHours={timePreferences.displayStartHour}
               >
                 {assignments
-                  .filter((location) => location.slotId === String(event.id))
-                  .map((location) => (
+                  .filter(
+                    (location) => location.slotId === String(workBlock.id)
+                  )
+                  .map((location, index) => (
                     <DraggableAssignment
                       key={location.assignment.id}
                       assignment={location.assignment}
@@ -60,6 +73,7 @@ export const CalendarWorkSlots: React.FC<{
                       deleteAssignment={() =>
                         deleteAssignment(location.assignment.id)
                       }
+                      locationKey={workBlock.start.getTime() * 1000 + index}
                     />
                   ))}
               </DroppableTimeSlot>

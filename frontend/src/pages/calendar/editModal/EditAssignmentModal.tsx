@@ -1,6 +1,7 @@
-import { EditModalFrame } from "./EditModalFrame"
-import { Assignment } from "../dragAndDrop/DraggableAssignment"
+import { EditModalFrame, ModalSide, VerticalAlign } from "./EditModalFrame"
+import { Assignment } from "../dragAndDrop/DraggableAssignment/DraggableAssignment"
 import { toISODate } from "../dates/dateUtils"
+import "./EditModal.css"
 
 export const EditAssignmentModal: React.FC<{
   isShown: boolean
@@ -8,11 +9,27 @@ export const EditAssignmentModal: React.FC<{
   assignment: Assignment
   updateAssignment: (assignment: Partial<Assignment>) => void
   deleteAssignment: () => void
-}> = ({ isShown, hide, assignment, updateAssignment, deleteAssignment }) => {
+  side: ModalSide
+  verticalAlign: VerticalAlign
+}> = ({
+  isShown,
+  hide,
+  assignment,
+  updateAssignment,
+  deleteAssignment,
+  side,
+  verticalAlign,
+}) => {
   const { title, minuteLength, priority, dueDate, className } = assignment
 
   return (
-    <EditModalFrame title="Edit Assignment" isShown={isShown} hide={hide}>
+    <EditModalFrame
+      title="Edit Assignment"
+      isShown={isShown}
+      hide={hide}
+      side={side}
+      verticalAlign={verticalAlign}
+    >
       <label>
         Name
         <input

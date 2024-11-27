@@ -10,7 +10,7 @@ import { Event, WorkBlock } from "../calendarTypes"
 import { TimePreferences } from "../hooks/useTimePreferences"
 import { CalendarWorkSlots } from "./CalendarWorkSlots"
 import { AssignmentLocation } from "../calendar"
-import { Assignment } from "../dragAndDrop/DraggableAssignment"
+import { Assignment } from "../dragAndDrop/DraggableAssignment/DraggableAssignment"
 
 export const CalendarContent: React.FC<{
   setEvents: Dispatch<SetStateAction<Event[]>>
