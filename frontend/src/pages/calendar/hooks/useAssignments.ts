@@ -71,15 +71,22 @@ export const useAssignmentStorage = () => {
   }
 
   const moveAssignment = (id: number, slotId: string) => {
-    setAssignments((assignments) =>
-      assignments.map((assignment) => {
-        if (assignment.assignment.id === id) {
-          return { ...assignment, slotId }
-        } else {
-          return assignment
-        }
-      })
-    )
+    setAssignments((assignments) => {
+      const currentAssignmentInfo = assignments.find(
+        (assignment) => assignment.assignment.id === id
+      )!
+
+      const assignmentListWithoutMovedAssignment = assignments.filter(
+        (assignment) => assignment.assignment.id !== id
+      )
+
+      const updatedAssignment = {
+        ...currentAssignmentInfo,
+        slotId,
+      }
+
+      return [...assignmentListWithoutMovedAssignment, updatedAssignment]
+    })
   }
 
   const createAssignment = () => {
