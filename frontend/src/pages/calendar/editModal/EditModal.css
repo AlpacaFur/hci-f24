@@ -26,12 +26,12 @@
 }
 
 .assignment-edit-modal.left {
-  left: -240px;
+  left: -236px;
   transform-origin: center right;
 }
 
 .assignment-edit-modal.right {
-  right: -240px;
+  right: -236px;
   transform-origin: center left;
 }
 
@@ -45,19 +45,18 @@
 .assignment-edit-modal:after {
   content: "";
   position: absolute;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
 }
 
 .assignment-edit-modal.left:after {
-  right: -15px;
-  border-left: 14px solid green;
-
+  right: -12px;
+  border-left: 10px solid green;
 }
 
 .assignment-edit-modal.right:after {
-  left: -15px;
-  border-right: 14px solid green;
+  left: -12px;
+  border-right: 10px solid green;
 }
 
 .assignment-edit-modal.top:after {
@@ -71,11 +70,11 @@
 .assignment-edit-modal.bottom:before {
   content: "";
   position: absolute;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-right: 14px solid white;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-right: 12px solid white;
   bottom: 20px;
-  left: -9px;
+  left: -7px;
   z-index: 1;
 }
 
