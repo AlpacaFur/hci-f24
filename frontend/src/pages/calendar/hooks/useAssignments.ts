@@ -148,6 +148,7 @@ export const useAssignmentStorage = () => {
     createAssignment,
     deleteAssignment,
     moveAssignment,
+    setAssignments,
     autoScheduleAssignments: autoScheduleAssignmentsCallback,
     unscheduleAll,
   }
