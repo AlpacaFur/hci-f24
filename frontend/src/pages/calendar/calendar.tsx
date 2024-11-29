@@ -21,6 +21,8 @@ import { CalendarContent } from "./calendarComponents/CalendarContent"
 import { useAssignmentStorage } from "./hooks/useAssignments"
 import { useEvents } from "./hooks/useEvents"
 import { useTimePreferences } from "./hooks/useTimePreferences"
+import { Event } from "./calendarTypes"
+import { reschedule } from "./slotAlgorithm/reschedule"
 
 const DATES = Array(7)
   .fill(0)
@@ -45,6 +47,7 @@ const HomePage: React.FC = () => {
     createAssignment,
     setEditing,
     moveAssignment,
+    setAssignments,
     autoScheduleAssignments,
     unscheduleAll,
   } = useAssignmentStorage()
@@ -52,6 +55,14 @@ const HomePage: React.FC = () => {
   const [timePreferences] = useTimePreferences()
 
   const workBlocks = generateSlots(DATES, events, timePreferences)
+
+  const updateEvents = (events: Event[]) => {
+    const newWorkBlocks = generateSlots(DATES, events, timePreferences)
+    setAssignments((currentAssignments) => {
+      return reschedule(currentAssignments, workBlocks, newWorkBlocks)
+    })
+    setEvents(events)
+  }
 
   const assignmentSensors = useSensors(
     useSensor(PointerSensor, {
@@ -124,7 +135,7 @@ const HomePage: React.FC = () => {
               <CalendarContent
                 dates={DATES}
                 events={events}
-                setEvents={setEvents}
+                setEvents={updateEvents}
                 timePreferences={timePreferences}
                 assignments={assignments}
                 setEditing={setEditing}

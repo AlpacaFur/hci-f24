@@ -11,9 +11,9 @@ export const autoScheduleAssignments = (
   assignments: AssignmentLocation[],
   workBlocks: WorkBlock[]
 ): AssignmentLocation[] => {
-  const unscheduledAssignments = assignments.filter(
-    (assignment) => assignment.slotId === ASSIGNMENT_LIST_SLOT_ID
-  )
+  const unscheduledAssignments = assignments
+    .filter((assignment) => assignment.slotId === ASSIGNMENT_LIST_SLOT_ID)
+    .sort((a, b) => b.assignment.minuteLength - a.assignment.minuteLength)
 
   const blockIndexPairings: [WorkBlock, number][] = workBlocks.map(
     (workBlock, index) => [workBlock, index]
@@ -61,6 +61,10 @@ export const autoScheduleAssignments = (
     const arrayIndex = sortedBlocks.findIndex(([, realIndex]) => {
       return capacities[realIndex] >= length
     })
+
+    if (arrayIndex === -1) {
+      return assignment
+    }
 
     const firstFittingBinIndex = sortedBlocks[arrayIndex][1]
 

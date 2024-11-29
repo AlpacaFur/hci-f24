@@ -5,15 +5,15 @@ import {
   restrictToParentElement,
 } from "../dragAndDrop/customModifiers"
 import { CalendarEvents } from "./CalendarEvents"
-import { Dispatch, SetStateAction, useRef } from "react"
+import { Dispatch, useRef } from "react"
 import { Event, WorkBlock } from "../calendarTypes"
 import { TimePreferences } from "../hooks/useTimePreferences"
 import { CalendarWorkSlots } from "./CalendarWorkSlots"
-import { AssignmentLocation } from "../calendar"
 import { Assignment } from "../dragAndDrop/DraggableAssignment/DraggableAssignment"
+import { AssignmentLocation } from "../hooks/useAssignments"
 
 export const CalendarContent: React.FC<{
-  setEvents: Dispatch<SetStateAction<Event[]>>
+  setEvents: Dispatch<Event[]>
   events: Event[]
   dates: Date[]
   timePreferences: TimePreferences
