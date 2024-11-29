@@ -6,6 +6,10 @@ body {
   display: flex;
   gap: 10px;
   margin-left: 75px;
+  box-sizing: border-box;
+  padding-right: 25px;
+  max-width: 1050px
+
 }
 
 .navigation-tabs a.active {
@@ -22,6 +26,10 @@ body {
   text-decoration: none;
 }
 
+.navigation-tabs .spacer {
+  margin-left: auto;
+}
+
 .content-frame {
   border: 4px solid #DDDEEB;
   border-radius: 8px;
@@ -31,6 +39,7 @@ body {
 
 .center-container {
   margin: 0 auto;
+  margin-top: 50px;
 }
 
 .calendar-dates {
@@ -209,7 +218,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow: hidden;
+  min-height: 0;
 }
 
 .assignments.over {
@@ -224,7 +233,6 @@ body {
   display: flex;
   gap: 6px;
   flex-direction: column;
-  overflow: auto;
   flex: 1;
 }
 

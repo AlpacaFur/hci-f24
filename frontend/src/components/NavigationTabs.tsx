@@ -18,6 +18,9 @@ export const NavigationTabs: React.FC = () => {
       <NavLinkActive to="/calendar">Calendar</NavLinkActive>
       <NavLinkActive to="/optimizations">Optimizations</NavLinkActive>
       <NavLinkActive to="/insights">Insights</NavLinkActive>
+      <div className="spacer"></div>
+      <NavLinkActive to="/profile-page">Profile</NavLinkActive>
+      <NavLinkActive to="/">Log Out</NavLinkActive>
     </div>
   )
 }

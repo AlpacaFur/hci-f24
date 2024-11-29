@@ -34,6 +34,27 @@ export const AssignmentList: React.FC<{
         Assignments
       </h2>
       <div className={"assignments" + (isOver ? " over" : "")} ref={setNodeRef}>
+        <div className="assignment-list-buttons">
+          <button
+            className="assignment-list-button auto-schedule"
+            onClick={(e) => {
+              if (e.shiftKey && !e.altKey) {
+                unscheduleAll()
+              } else if (e.altKey && e.shiftKey) {
+                localStorage.clear()
+                window.location.reload()
+              } else {
+                autoScheduleAssignments()
+              }
+            }}
+          >
+            Auto Schedule
+          </button>
+          {/* <button className="assignment-list-button" onClick={unscheduleAll}>
+            Unschedule All
+          </button> */}
+          {/* <button className="assignment-list-button">Refresh</button> */}
+        </div>
         <div className="assignment-list">
           {assignments
             .filter((location) => location.slotId === ASSIGNMENT_LIST_SLOT_ID)
@@ -56,18 +77,6 @@ export const AssignmentList: React.FC<{
           >
             Create Assignment
           </button>
-        </div>
-        <div className="assignment-list-buttons">
-          <button
-            className="assignment-list-button"
-            onClick={autoScheduleAssignments}
-          >
-            Auto Schedule
-          </button>
-          <button className="assignment-list-button" onClick={unscheduleAll}>
-            Unschedule All
-          </button>
-          <button className="assignment-list-button">Refresh</button>
         </div>
       </div>
     </div>

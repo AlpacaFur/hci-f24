@@ -57,7 +57,7 @@ export const DraggableAssignment: React.FC<{
         setVerticalAlign("top")
       }
     }
-  }, [node, locationKey])
+  }, [node, locationKey, editing])
 
   return (
     <div

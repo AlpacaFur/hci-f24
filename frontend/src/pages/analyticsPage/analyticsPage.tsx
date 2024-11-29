@@ -5,7 +5,7 @@ import { NavigationTabs } from "../../components/NavigationTabs"
 
 export const AnalyticsPage: React.FC = () => {
   return (
-    <div className="base">
+    <div className="center-container">
       <NavigationTabs />
       <div className="content-frame">
         <h1>Insights & Analytics</h1>

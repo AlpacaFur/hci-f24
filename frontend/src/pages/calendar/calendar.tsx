@@ -1,5 +1,4 @@
 import "./calendar.css"
-import NavBar from "../../components/navBar/navBar"
 import {
   DndContext,
   DragOverlay,
@@ -73,96 +72,91 @@ const HomePage: React.FC = () => {
   )
 
   return (
-    <div>
-      <NavBar />
-      <div className="center-container">
-        <NavigationTabs />
-        <div className="calendar-side">
-          <DndContext
-            collisionDetection={pointerWithin}
-            sensors={assignmentSensors}
-            modifiers={[snapCenterToCursor]}
-            cancelDrop={(args) => args.over === null}
-            onDragStart={(event) =>
-              setActiveAssignment(
-                assignments.find(
-                  (location) => location.assignment.id === event.active.id
-                )!.assignment
-              )
+    <div className="center-container">
+      <NavigationTabs />
+      <div className="calendar-side">
+        <DndContext
+          collisionDetection={pointerWithin}
+          sensors={assignmentSensors}
+          modifiers={[snapCenterToCursor]}
+          cancelDrop={(args) => args.over === null}
+          onDragStart={(event) =>
+            setActiveAssignment(
+              assignments.find(
+                (location) => location.assignment.id === event.active.id
+              )!.assignment
+            )
+          }
+          onDragEnd={(event) => {
+            if (event.over !== null) {
+              moveAssignment(Number(event.active.id), String(event.over.id))
             }
-            onDragEnd={(event) => {
-              if (event.over !== null) {
-                moveAssignment(Number(event.active.id), String(event.over.id))
-              }
-              setActiveAssignment(false)
-            }}
-          >
-            <div className="time-labels">
-              {range(
-                timePreferences.displayStartHour,
-                timePreferences.displayEndHour + 1
-              ).map((hour) => {
-                const dayPeriod = hour < 12 ? "am" : "pm"
-                const convertedHour = hour === 12 ? 12 : hour % 12
+            setActiveAssignment(false)
+          }}
+        >
+          <div className="time-labels">
+            {range(
+              timePreferences.displayStartHour,
+              timePreferences.displayEndHour + 1
+            ).map((hour) => {
+              const dayPeriod = hour < 12 ? "am" : "pm"
+              const convertedHour = hour === 12 ? 12 : hour % 12
 
+              return (
+                <p key={convertedHour + dayPeriod}>
+                  {convertedHour}
+                  {dayPeriod}
+                </p>
+              )
+            })}
+          </div>
+          <div className="content-frame">
+            <div className="calendar-dates">
+              {DATES.map((sourceDate) => {
+                const month = sourceDate.toLocaleDateString("en-us", {
+                  month: "short",
+                })
+                const dayOfTheWeek = sourceDate.toLocaleDateString("en-us", {
+                  weekday: "long",
+                })
+                const date = sourceDate.getDate()
                 return (
-                  <p key={convertedHour + dayPeriod}>
-                    {convertedHour}
-                    {dayPeriod}
-                  </p>
+                  <div key={sourceDate.getTime()}>
+                    <p>{month}</p>
+                    <p>{date}</p>
+                    <p>{dayOfTheWeek}</p>
+                  </div>
                 )
               })}
             </div>
-            <div className="content-frame">
-              <div className="calendar-dates">
-                {DATES.map((sourceDate) => {
-                  const month = sourceDate.toLocaleDateString("en-us", {
-                    month: "short",
-                  })
-                  const dayOfTheWeek = sourceDate.toLocaleDateString("en-us", {
-                    weekday: "long",
-                  })
-                  const date = sourceDate.getDate()
-                  return (
-                    <div key={sourceDate.getTime()}>
-                      <p>{month}</p>
-                      <p>{date}</p>
-                      <p>{dayOfTheWeek}</p>
-                    </div>
-                  )
-                })}
-              </div>
-              <CalendarContent
-                dates={DATES}
-                events={events}
-                setEvents={updateEvents}
-                timePreferences={timePreferences}
-                assignments={assignments}
-                setEditing={setEditing}
-                updateAssignment={updateAssignment}
-                deleteAssignment={deleteAssignment}
-                freeSlots={workBlocks}
-              />
-            </div>
-            <AssignmentList
+            <CalendarContent
+              dates={DATES}
+              events={events}
+              setEvents={updateEvents}
+              timePreferences={timePreferences}
               assignments={assignments}
-              updateAssignment={updateAssignment}
               setEditing={setEditing}
+              updateAssignment={updateAssignment}
               deleteAssignment={deleteAssignment}
-              createAssignment={createAssignment}
-              autoScheduleAssignments={() =>
-                autoScheduleAssignments(workBlocks)
-              }
-              unscheduleAll={unscheduleAll}
+              freeSlots={workBlocks}
             />
+          </div>
+          <AssignmentList
+            assignments={assignments}
+            updateAssignment={updateAssignment}
+            setEditing={setEditing}
+            deleteAssignment={deleteAssignment}
+            createAssignment={createAssignment}
+            autoScheduleAssignments={() => autoScheduleAssignments(workBlocks)}
+            unscheduleAll={unscheduleAll}
+          />
 
-            <DragOverlay dropAnimation={customDropAnimation}>
-              {activeAssignment && (
-                <PlainAssignment assignment={activeAssignment} />
-              )}
-            </DragOverlay>
-          </DndContext>
-        </div>
+          <DragOverlay dropAnimation={customDropAnimation}>
+            {activeAssignment && (
+              <PlainAssignment assignment={activeAssignment} />
+            )}
+          </DragOverlay>
+        </DndContext>
       </div>
     </div>
   )
