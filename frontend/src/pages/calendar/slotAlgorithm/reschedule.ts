@@ -348,6 +348,10 @@ export const reschedule = (
           assignment.slotId
       })
 
+      const fullyScheduled = rescheduled.filter(
+        (assignment) => assignment.slotId !== ASSIGNMENT_LIST_SLOT_ID
+      )
+
       const unscheduled = rescheduled.filter(
         (assignment) => assignment.slotId === ASSIGNMENT_LIST_SLOT_ID
       )
@@ -361,10 +365,13 @@ export const reschedule = (
         .filter((block) => block.start.getDate() === newBlock.start.getDate())
 
       const rerescheduled = autoScheduleAssignments(
-        unscheduled.map((assignment) => ({
-          ...assignment,
-          slotId: ASSIGNMENT_LIST_SLOT_ID,
-        })),
+        [
+          ...fullyScheduled,
+          ...unscheduled.map((assignment) => ({
+            ...assignment,
+            slotId: ASSIGNMENT_LIST_SLOT_ID,
+          })),
+        ],
         [...grownBlocksOnSameDay]
       )
 
