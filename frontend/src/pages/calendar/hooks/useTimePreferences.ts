@@ -3,7 +3,7 @@ import { useRefreshingLocalStorage } from "./useRefreshingLocalStorage"
 
 const workingHoursSchema = z.object({ start: z.number(), end: z.number() })
 
-const timePreferenecesSchema = z.object({
+const timePreferencesSchema = z.object({
   displayStartHour: z.number(),
   displayEndHour: z.number(),
   minimumBlockSizeMinutes: z.number(),
@@ -19,7 +19,7 @@ const timePreferenecesSchema = z.object({
   }),
 })
 
-export type TimePreferences = z.infer<typeof timePreferenecesSchema>
+export type TimePreferences = z.infer<typeof timePreferencesSchema>
 
 const DEFAULT_TIME_PREFERENCES: TimePreferences = {
   displayStartHour: 9,
@@ -61,7 +61,7 @@ const DEFAULT_TIME_PREFERENCES: TimePreferences = {
 export const useTimePreferences = () => {
   return useRefreshingLocalStorage(
     "earlybird-timepreferences",
-    timePreferenecesSchema,
+    timePreferencesSchema,
     DEFAULT_TIME_PREFERENCES
   )
 }
