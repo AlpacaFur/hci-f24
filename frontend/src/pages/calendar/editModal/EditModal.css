@@ -67,7 +67,7 @@
   bottom: 20px;
 }
 
-.assignment-edit-modal.bottom:before {
+.assignment-edit-modal.right.bottom:before {
   content: "";
   position: absolute;
   border-top: 9px solid transparent;
@@ -75,6 +75,17 @@
   border-right: 12px solid white;
   bottom: 20px;
   left: -7px;
+  z-index: 1;
+}
+
+.assignment-edit-modal.left.bottom:before {
+  content: "";
+  position: absolute;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 12px solid white;
+  bottom: 20px;
+  right: -7px;
   z-index: 1;
 }
 
