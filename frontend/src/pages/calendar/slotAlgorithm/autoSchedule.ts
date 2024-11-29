@@ -9,7 +9,8 @@ const TIME_SLOT_PADDING = 15 * 2
 
 export const autoScheduleAssignments = (
   assignments: AssignmentLocation[],
-  workBlocks: WorkBlock[]
+  workBlocks: WorkBlock[],
+  distributeEvenly: boolean = true
 ): AssignmentLocation[] => {
   const unscheduledAssignments = assignments
     .filter((assignment) => assignment.slotId === ASSIGNMENT_LIST_SLOT_ID)
@@ -55,7 +56,11 @@ export const autoScheduleAssignments = (
       assignment.assignment.minuteLength + 16 + ASSIGNMENT_SPACING_MINS
 
     const sortedBlocks = [...blockIndexPairings].sort((blockA, blockB) => {
-      return assignmentsPerBlock[blockA[1]] - assignmentsPerBlock[blockB[1]]
+      if (distributeEvenly) {
+        return assignmentsPerBlock[blockA[1]] - assignmentsPerBlock[blockB[1]]
+      } else {
+        return 0
+      }
     })
 
     const arrayIndex = sortedBlocks.findIndex(([, realIndex]) => {

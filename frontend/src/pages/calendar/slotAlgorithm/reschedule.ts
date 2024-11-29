@@ -100,9 +100,6 @@ const classifyUnassociatedBlocks = (
   oldBlocks: WorkBlock[],
   newBlocks: WorkBlock[]
 ): ClassifiedBlock[] => {
-  console.log("old", oldBlocks)
-  console.log("new", newBlocks)
-
   const classifiedBlocks: ClassifiedBlock[] = []
 
   let mutableOldBlocks = [...oldBlocks]
@@ -176,8 +173,6 @@ const classifyUnassociatedBlocks = (
     }
   })
 
-  console.log("old at this point", mutableOldBlocks)
-
   // Shrunk / Grow
   mutableOldBlocks.forEach((oldBlock) => {
     const newBlockWithSameStart = blockQueryFind(mutableNewBlocks, {
@@ -208,8 +203,6 @@ const classifyUnassociatedBlocks = (
       end: oldBlock.end,
     })
 
-    console.log(oldBlock, mutableNewBlocks, newBlockWithSameEnd)
-
     if (newBlockWithSameEnd !== undefined) {
       if (newBlockWithSameEnd.start.getTime() < oldBlock.start.getTime()) {
         classifiedBlocks.push({
@@ -237,8 +230,6 @@ const classifyUnassociatedBlocks = (
       newId: newBlock.id,
     })
   })
-
-  console.log("classified", classifiedBlocks)
 
   return classifiedBlocks
 }
@@ -295,30 +286,9 @@ export const reschedule = (
 
   const assignmentAssociations: Record<number, string> = {}
 
-  // classifiedUnassociatedBlocks.forEach((classifiedBlock) => {
-  //   if (classifiedBlock.type === "shrunk") {
-  //     const oldContents = assignments.filter(
-  //       (assignment) => Number(assignment.slotId) === classifiedBlock.oldId
-  //     )
-
-  //     const newBlock = newWorkBlocks.find(
-  //       (block) => block.id === classifiedBlock.newId
-  //     )!
-
-  //     const rescheduled = autoScheduleAssignments(
-  //       oldContents.map((assignment) => ({
-  //         ...assignment,
-  //         slotId: ASSIGNMENT_LIST_SLOT_ID,
-  //       })),
-  //       [newBlock]
-  //     )
-  //     rescheduled.forEach((assignment) => {
-  //       assignmentAssociations[assignment.assignment.id] = assignment.slotId
-  //     })
-  //   }
-  // })
-  classifiedUnassociatedBlocks.forEach((classifiedBlock) => {
-    if (classifiedBlock.type === "split") {
+  classifiedUnassociatedBlocks
+    .filter((classifiedBlock) => classifiedBlock.type === "split")
+    .forEach((classifiedBlock) => {
       const oldContents = assignments.filter(
         (assignment) => Number(assignment.slotId) === classifiedBlock.oldId
       )
@@ -335,13 +305,13 @@ export const reschedule = (
           ...assignment,
           slotId: ASSIGNMENT_LIST_SLOT_ID,
         })),
-        [newBlockA, newBlockB]
+        [newBlockA, newBlockB],
+        false
       )
       rescheduled.forEach((assignment) => {
         assignmentAssociations[assignment.assignment.id] = assignment.slotId
       })
-    }
-  })
+    })
 
   const reremappedAssignments: AssignmentLocation[] = remappedAssignments.map(
     (assignment) => ({
@@ -352,5 +322,66 @@ export const reschedule = (
     })
   )
 
-  return reremappedAssignments
+  const shrunkAssignmentAssociations: Record<number, string> = {}
+
+  classifiedUnassociatedBlocks
+    .filter((classifiedBlock) => classifiedBlock.type === "shrunk")
+    .forEach((classifiedBlock) => {
+      const oldContents = assignments.filter(
+        (assignment) => Number(assignment.slotId) === classifiedBlock.oldId
+      )
+
+      const newBlock = newWorkBlocks.find(
+        (block) => block.id === classifiedBlock.newId
+      )!
+
+      const rescheduled = autoScheduleAssignments(
+        oldContents.map((assignment) => ({
+          ...assignment,
+          slotId: ASSIGNMENT_LIST_SLOT_ID,
+        })),
+        [newBlock]
+      )
+
+      rescheduled.forEach((assignment) => {
+        shrunkAssignmentAssociations[assignment.assignment.id] =
+          assignment.slotId
+      })
+
+      const unscheduled = rescheduled.filter(
+        (assignment) => assignment.slotId === ASSIGNMENT_LIST_SLOT_ID
+      )
+
+      const grownBlocksOnSameDay = classifiedUnassociatedBlocks
+        .filter((block) => block.type === "grown")
+        .map(
+          (block) =>
+            newWorkBlocks.find((newBlock) => newBlock.id === block.newId)!
+        )
+        .filter((block) => block.start.getDate() === newBlock.start.getDate())
+
+      const rerescheduled = autoScheduleAssignments(
+        unscheduled.map((assignment) => ({
+          ...assignment,
+          slotId: ASSIGNMENT_LIST_SLOT_ID,
+        })),
+        [...grownBlocksOnSameDay]
+      )
+
+      rerescheduled.forEach((assignment) => {
+        shrunkAssignmentAssociations[assignment.assignment.id] =
+          assignment.slotId
+      })
+    })
+
+  const finalMappedAssignments: AssignmentLocation[] =
+    reremappedAssignments.map((assignment) => ({
+      ...assignment,
+      slotId: String(
+        shrunkAssignmentAssociations[assignment.assignment.id] ??
+          assignment.slotId
+      ),
+    }))
+
+  return finalMappedAssignments
 }
