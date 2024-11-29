@@ -356,8 +356,8 @@ export const reschedule = (
         (assignment) => assignment.slotId === ASSIGNMENT_LIST_SLOT_ID
       )
 
-      const grownBlocksOnSameDay = classifiedUnassociatedBlocks
-        .filter((block) => block.type === "grown")
+      const grownOrNewBlocksOnSameDay = classifiedUnassociatedBlocks
+        .filter((block) => block.type === "grown" || block.type === "new")
         .map(
           (block) =>
             newWorkBlocks.find((newBlock) => newBlock.id === block.newId)!
@@ -372,7 +372,7 @@ export const reschedule = (
             slotId: ASSIGNMENT_LIST_SLOT_ID,
           })),
         ],
-        [...grownBlocksOnSameDay]
+        [...grownOrNewBlocksOnSameDay]
       )
 
       rerescheduled.forEach((assignment) => {
