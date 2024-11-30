@@ -34,23 +34,56 @@ export const generateSlots = (
           getMinuteDifference(event.start, startOfDayDate) >
           minimumBlockSizeMinutes + transitionTimeMinutes
         ) {
+          const minEventStartAndEOD = new Date(
+            Math.min(
+              addMinutes(event.start, -transitionTimeMinutes).getTime(),
+              endOfDayDate.getTime()
+            )
+          )
+
           newFreeSlots.push({
             id: id++,
             start: startOfDayDate,
-            end: addMinutes(event.start, -transitionTimeMinutes),
+            end: minEventStartAndEOD,
           })
         }
       } else {
         const prevEvent = eventsOnDate[index - 1]
 
+        const basePrevEventEnd = addMinutes(
+          prevEvent.end,
+          transitionTimeMinutes
+        )
+
+        const maxEventEndAndStartOfDay = new Date(
+          Math.max(basePrevEventEnd.getTime(), startOfDayDate.getTime())
+        )
+
+        const baseNextEventStart = addMinutes(
+          event.start,
+          -transitionTimeMinutes
+        )
+
+        const minEventStartAndEOD = new Date(
+          Math.min(baseNextEventStart.getTime(), endOfDayDate.getTime())
+        )
+
+        const truncatedAtStart =
+          maxEventEndAndStartOfDay.getTime() > basePrevEventEnd.getTime()
+        const truncatedAtEnd =
+          minEventStartAndEOD.getTime() < baseNextEventStart.getTime()
+
+        const totalTransitionTime =
+          2 - [truncatedAtStart, truncatedAtEnd].filter((x) => x).length
+
         if (
-          getMinuteDifference(event.start, prevEvent.end) >
-          minimumBlockSizeMinutes + transitionTimeMinutes * 2
+          getMinuteDifference(minEventStartAndEOD, maxEventEndAndStartOfDay) >
+          minimumBlockSizeMinutes + totalTransitionTime
         ) {
           newFreeSlots.push({
             id: id++,
-            start: addMinutes(prevEvent.end, transitionTimeMinutes),
-            end: addMinutes(event.start, -transitionTimeMinutes),
+            start: maxEventEndAndStartOfDay,
+            end: minEventStartAndEOD,
           })
         }
       }
@@ -62,9 +95,16 @@ export const generateSlots = (
         getMinuteDifference(endOfDayDate, lastEvent.end) >
         transitionTimeMinutes + minimumBlockSizeMinutes
       ) {
+        const maxEventEndAndStartOfDay = new Date(
+          Math.max(
+            addMinutes(lastEvent.end, transitionTimeMinutes).getTime(),
+            startOfDayDate.getTime()
+          )
+        )
+
         newFreeSlots.push({
           id: id++,
-          start: addMinutes(lastEvent.end, transitionTimeMinutes),
+          start: maxEventEndAndStartOfDay,
           end: endOfDayDate,
         })
       }
