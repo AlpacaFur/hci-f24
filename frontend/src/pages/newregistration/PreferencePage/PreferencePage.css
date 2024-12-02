@@ -57,7 +57,7 @@
 /* Button Container */
 .buttons {
   position: fixed; /* Fixed position relative to the viewport */
-  bottom: 420px; /* Distance from the bottom of the viewport */
+  bottom: 290px; /* Distance from the bottom of the viewport */
   left: 50%; /* Center the container horizontally */
   transform: translateX(-50%); /* Adjust for perfect centering */
   display: flex; /* Align buttons in a row */
