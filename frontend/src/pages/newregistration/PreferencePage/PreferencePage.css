@@ -11,6 +11,7 @@
     background-color: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
   }
   
   label {
@@ -60,14 +61,15 @@
   bottom: 290px; /* Distance from the bottom of the viewport */
   left: 50%; /* Center the container horizontally */
   transform: translateX(-50%); /* Adjust for perfect centering */
+  margin-top: 20px;
   display: flex; /* Align buttons in a row */
   flex-direction: row; /* Arrange buttons horizontally */
   gap: 15px; /* Space between buttons */
-  z-index: 1000; /* Ensure buttons are on top of other content */
-  /*background-color: rgba(255, 255, 255, 0.9);  Optional: translucent background */
-  padding: 10px; /* Optional: padding around the button group */
   border-radius: 10px; /* Optional: rounded corners */
+  padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: subtle shadow */
+  position: absolute;
+  bottom: -100px;
 }
 
 /* Individual Buttons */
