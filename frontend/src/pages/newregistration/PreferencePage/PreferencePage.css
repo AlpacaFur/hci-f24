@@ -186,6 +186,7 @@ button {
     align-items: center;
     max-width: 500px;
     width: 90%; /* Ensure it fits on small screens */
+    position: relative;
   }
   /* Centered Content for Step 4 */
   .centered-content {
