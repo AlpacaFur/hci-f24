@@ -37,7 +37,7 @@ const Step4: React.FC<Step4Props> = ({
     setTimeout(() => {
       setIsLoading(false);
       setIsClassSelectionOpen(true);
-    }, 3000)
+    }, 2500)
     
   };
 
