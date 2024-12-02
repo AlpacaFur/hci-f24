@@ -4,7 +4,7 @@ import { StudentProvider } from "./components/useStudent/useStudent" // Adjust p
 import LoginPage from "./pages/loginPage/loginPage"
 import HomePage from "./pages/calendar/calendar"
 import ProfilePage from "./pages/profilePage/profilePage"
-import WelcomePage from "./pages/welcomePage/welcomePage"
+//import WelcomePage from "./pages/welcomePage/welcomePage"
 import { OptimizationsPage } from "./pages/optimizations/optimizations"
 import RegisterInfo from "./pages/newregistration/RegisterInfo/RegisterInfo"
 import PreferencePage from "./pages/newregistration/PreferencePage/PreferencePage"
@@ -13,10 +13,6 @@ const App: React.FC = () => {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <WelcomePage />,
-    },
-    {
-      path: "/login",
       element: <LoginPage />,
     },
     {

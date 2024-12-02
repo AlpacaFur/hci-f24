@@ -79,8 +79,7 @@
     color: #003a5d;
   }
   
-  /* Forgot Password and Error Message */
-  .forgot-password-error {
+  .auth-links {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -88,19 +87,22 @@
     margin-bottom: 25px;
   }
   
-  .forgot-password {
+  .forgot-password,
+  .create-account {
     font-size: 14px;
     color: #003a5d;
     text-decoration: none;
   }
   
-  .forgot-password:hover {
+  .forgot-password:hover,
+  .create-account:hover {
     text-decoration: underline;
   }
   
   .error-message {
     color: red;
     font-size: 14px;
+    margin-top: 5px; /* Add spacing between error message and links if needed */
     text-align: right; /* Align error messages to the right */
   }
   

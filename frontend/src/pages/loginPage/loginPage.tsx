@@ -57,10 +57,12 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="forgot-password-error">
+      <div className="auth-links">
         <a href="/forgot-password" className="forgot-password">Forgot Password?</a>
-        {error && <span className="error-message">{error}</span>}
+        <a href="/create-user" className="create-account">Create new account</a>
       </div>
+{error && <span className="error-message">{error}</span>}
+
       <button className="submit-button" type="submit">Sign In</button>
     </form>
   );
