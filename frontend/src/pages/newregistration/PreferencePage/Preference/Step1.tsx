@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 interface Step1Props {
   fromHours: string;
   fromMinutes: string;
@@ -31,10 +31,15 @@ const Step1: React.FC<Step1Props> = ({
   setToPeriod,
   handleNextStep,
 }) => {
+  const navigate = useNavigate();
+  function backOne(): void {
+    navigate("/create-user");
+  }
+
   return (
     <div className="step-container">
       <label>What are your working hours?</label>
-
+      <div className = "inner-goop">
       {/* From Time */}
       <div className="time-inputs">
         <label>From</label>
@@ -80,8 +85,12 @@ const Step1: React.FC<Step1Props> = ({
           <option value="PM">PM</option>
         </select>
       </div>
+      </div>
 
       <div className="buttons">
+      <button onClick={backOne} className="back-button">
+          Back
+        </button>
         <button onClick={handleNextStep} className="next-button">
           Next
         </button>

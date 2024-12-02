@@ -24,6 +24,7 @@ const Step2: React.FC<Step2Props> = ({
 }) => {
   return (
     <div className="step-container">
+      <div className="inner-goop">
       <label>How long do you like to study for at one time?</label>
       <div className="time-input">
         <div className="time-box">
@@ -64,6 +65,7 @@ const Step2: React.FC<Step2Props> = ({
         <option value={15}>15 minutes</option>
         <option value={20}>20 minutes</option>
       </select>
+      </div>
       <div className="buttons">
         <button onClick={handlePreviousStep} className="back-button">
           Back

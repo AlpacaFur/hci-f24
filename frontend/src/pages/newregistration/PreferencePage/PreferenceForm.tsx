@@ -87,6 +87,7 @@ const PreferencesForm: React.FC = () => {
           handleLoginWithCanvas={handleLoginWithCanvas} // Pass handleLoginWithCanvas to Step4
           handlePreviousStep={handlePreviousStep} // Pass handlePreviousStep to Step4
           handleSkip={handleSkip}  // Pass handleSkip to Step4
+          handleNextStep={handleNextStep}
         />
       )}
       {step === 5 && (
