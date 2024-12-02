@@ -14,7 +14,18 @@ body {
 
 .navigation-tabs a.active {
   background: #DDDEEB;
+  /* font-weight: bold; */
+  color: transparent;
+  position: relative;
+}
+
+.navigation-tabs a.active::after {
+  content: attr(data-text);
+  color: black;
   font-weight: bold;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .navigation-tabs a {
@@ -175,8 +186,6 @@ body {
   font-weight: bold;
 }
 
-
-
 .calendar-body {
   display: flex;
 }
@@ -240,4 +249,20 @@ body {
   display: flex;
   gap: 6px;
   flex-direction: column;
+}
+
+a.danger {
+  color: rgb(175, 0, 0);
+}
+
+.shift-frame {
+  margin-left: 60px;
+  padding: 0px 20px;
+  margin-right: 60px;
+  min-width: 1058px;
+  box-sizing: border-box;
+}
+
+.adapt-to-width {
+  max-width: unset;
 }

@@ -2,12 +2,15 @@ import { PropsWithChildren } from "react"
 import { NavLink } from "react-router-dom"
 
 const NavLinkActive: React.FC<
-  PropsWithChildren<Parameters<typeof NavLink>[0]>
+  PropsWithChildren<Parameters<typeof NavLink>[0] & { danger?: boolean }>
 > = (props) => {
   return (
     <NavLink
       {...props}
-      className={({ isActive }) => (isActive ? "active" : "")}
+      className={({ isActive }) =>
+        (props.danger ? "danger " : "") + (isActive ? "active" : "")
+      }
+      data-text={props.children}
     ></NavLink>
   )
 }
@@ -20,7 +23,9 @@ export const NavigationTabs: React.FC = () => {
       <NavLinkActive to="/insights">Insights</NavLinkActive>
       <div className="spacer"></div>
       <NavLinkActive to="/profile-page">Profile</NavLinkActive>
-      <NavLinkActive to="/">Log Out</NavLinkActive>
+      <NavLinkActive to="/" danger={true}>
+        Log Out
+      </NavLinkActive>
     </div>
   )
 }

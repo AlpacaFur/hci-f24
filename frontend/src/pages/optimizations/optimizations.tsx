@@ -8,11 +8,11 @@ export const OptimizationsPage: React.FC = () => {
     <div>
       <div className="center-container">
         <NavigationTabs />
-        <div className="content-frame">
+        <div className="content-frame shift-frame">
           <h1>Optimizations</h1>
+          <LessTimeComponent />
+          <ExtraTimeComponent />
         </div>
-        <LessTimeComponent />
-        <ExtraTimeComponent />
       </div>
     </div>
   )
