@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import "./optimizationmodals.css"
+import "./optimizationmodals.css";
+import BreakModal from "./addBreakModal";
 
 interface timeProps {
     studyHours: number;
@@ -41,6 +42,7 @@ export const ExtraTimeComponent: React.FC<timeProps> = ({studyHours,
     const doneSettingTime = () => {
         setModalOpen(false);
         setNotificationOpen(true);
+        setIsVisible(false);
     }
 
     //Handle closing notification
@@ -58,61 +60,17 @@ export const ExtraTimeComponent: React.FC<timeProps> = ({studyHours,
                 <button className="positive" onClick={handleYesClick}>Yes</button>
                 <button className="negative" onClick={handleNoClick}>No</button>
             </div>
-            {modalOpen && (
-                 <div className="modal-overlay">
-          <div className="modal-content">
-            <button className="exit-button" onClick={closeModal}>X</button>
-            <label>Set a break of </label>
-            <div className="time-box">
-          <select
-            value={breakMinutes}
-            onChange={(e) => setBreakMinutes(Number(e.target.value))}
-          >
-            <option value={0}>00</option>
-            <option value={15}>15</option>
-            <option value={30}>30</option>
-            <option value={45}>45</option>
-            <option value={60}>60</option>
-          </select>
-          <label>minutes</label>
-        </div>
-        <label>after</label>
-      <div className="time-input">
-        <div className="time-box">
-          <select
-            value={studyHours}
-            onChange={(e) => setStudyHours(Number(e.target.value))}
-          >
-            <option value={0}>0</option>
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
-            <option value={4}>4</option>
-            <option value={5}>5</option>
-          </select>
-          <label>hours</label>
-        </div>
-        <div className="time-box">
-          <label>and</label>
-          <select
-            value={studyMinutes}
-            onChange={(e) => setStudyMinutes(Number(e.target.value))}
-          >
-            <option value={0}>00</option>
-            <option value={15}>15</option>
-            <option value={30}>30</option>
-            <option value={45}>45</option>
-            <option value={60}>60</option>
-          </select>
-          <label>minutes of studying</label>
-        </div>
-      </div>
-      <button className="done-button" onClick={doneSettingTime}>
-        Done
-        </button>
-          </div>
-          </div>
-            )}
+            {modalOpen && 
+             <BreakModal
+             breakMinutes={breakMinutes}
+             studyHours={studyHours}
+             studyMinutes={studyMinutes}
+             setBreakMinutes={setBreakMinutes}
+             setStudyHours={setStudyHours}
+             setStudyMinutes={setStudyMinutes}
+             closeModal={closeModal}
+             doneSettingTime={doneSettingTime}
+           />}
             {notificationOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -124,5 +82,5 @@ export const ExtraTimeComponent: React.FC<timeProps> = ({studyHours,
           </div>
             )}
         </div>
-    ) : null; // If `isVisible` is false, return null to hide the entire component
+    ) : null;
 };

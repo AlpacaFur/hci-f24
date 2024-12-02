@@ -1,7 +1,7 @@
 .optimization-divider {
   font-size: 25px;
   text-align: center;
-  background-color: #bfe7ef;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
   align-items: center;
   width: 80%;
   border-radius: 15px;

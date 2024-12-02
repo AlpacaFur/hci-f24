@@ -1,5 +1,6 @@
 .exit-button {
-    size: 50px;
+    font-size: 30px;
+    text-align: right;
     align-items: right;
     background-color: transparent;
     color: palevioletred;
