@@ -1,48 +1,54 @@
-import React, { useEffect, useState } from "react"
-import defaultProfilePic from "../../../public/photos/keithBagley.png" // Placeholder image path
-import User from "../../components/User" // Import the User class
-import "./profilePage.css"
-import { NavigationTabs } from "../../components/NavigationTabs"
-const ProfilePage = () => {
-  // Load user data from localStorage
-  const user = User.loadFromLocalStorage()
+import React, { useEffect, useState } from "react";
+import defaultProfilePic from "../../../public/photos/keithBagley.png"; // Placeholder image path
+import User from "../../components/User"; // Import the User class
+import { NavigationTabs } from "../../components/NavigationTabs";
+import "./profilePage.css";
 
-  const [firstName, setFirstName] = useState(user.firstName)
-  const [lastName, setLastName] = useState(user.lastName)
-  const [email, setEmail] = useState(user.email)
+
+const ProfilePage = () => {
+  const user = User.loadFromLocalStorage();
+
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName);
+  const [email, setEmail] = useState(user.email);
   const [profilePic, setProfilePic] = useState(
     user.profilePic || defaultProfilePic
-  ) // Default to placeholder if no profile pic
+  );
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    // Update the state if the user info in localStorage changes
-    const storedUser = User.loadFromLocalStorage()
-    setFirstName(storedUser.firstName)
-    setLastName(storedUser.lastName)
-    setEmail(storedUser.email)
-    setProfilePic(storedUser.profilePic || defaultProfilePic)
-  }, [])
+    const storedUser = User.loadFromLocalStorage();
+    setFirstName(storedUser.firstName);
+    setLastName(storedUser.lastName);
+    setEmail(storedUser.email);
+    setProfilePic(storedUser.profilePic || defaultProfilePic);
+  }, []);
 
-  // Handle profile picture upload
   const handleProfilePicChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.target.files ? event.target.files[0] : null
+    const file = event.target.files ? event.target.files[0] : null;
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setProfilePic(reader.result as string)
+        setProfilePic(reader.result as string);
         const updatedUser = new User(
           firstName,
           lastName,
           email,
           reader.result as string
-        )
-        updatedUser.saveToLocalStorage() // Save updated profile pic to localStorage
-      }
-      reader.readAsDataURL(file)
+        );
+        updatedUser.saveToLocalStorage();
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
+
+  const handleSaveChanges = () => {
+    const updatedUser = new User(firstName, lastName, email, profilePic);
+    updatedUser.saveToLocalStorage();
+    setIsEditing(false);
+  };
 
   return (
     <div className="center-container">
@@ -56,14 +62,14 @@ const ProfilePage = () => {
                 <img
                   src={profilePic}
                   alt="Profile"
-                  style={{ width: 150, height: 150, borderRadius: "50%" }} // Optional: Styling for profile pic
+                  className="profile-picture-image"
                 />
                 <input
                   type="file"
                   accept="image/*"
                   id="upload"
-                  style={{ display: "none" }}
                   onChange={handleProfilePicChange}
+                  className="file-input"
                 />
                 <label className="change-icon-button" htmlFor="upload">
                   Change Icon
@@ -71,18 +77,70 @@ const ProfilePage = () => {
               </div>
               <div className="profile-details">
                 <p>
-                  <strong>Name:</strong> {firstName} {lastName}
+                  <strong>First Name:</strong>{" "}
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  ) : (
+                    firstName
+                  )}
                 </p>
                 <p>
-                  <strong>Email:</strong> {email}
+                  <strong>Last Name:</strong>{" "}
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  ) : (
+                    lastName
+                  )}
                 </p>
+                <p>
+                  <strong>Email:</strong>{" "}
+                  {isEditing ? (
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  ) : (
+                    email
+                  )}
+                </p>
+              </div>
+              <div className="profile-buttons">
+                <button
+                  className="edit-button"
+                  onClick={() => {
+                    if (isEditing) {
+                      handleSaveChanges();
+                    } else {
+                      setIsEditing(true);
+                    }
+                  }}
+                >
+                  {isEditing ? "Save Changes" : "Edit Profile"}
+                </button>
+                {isEditing && (
+                  <button
+                    className="cancel-button"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    Cancel
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfilePage
+export default ProfilePage;
