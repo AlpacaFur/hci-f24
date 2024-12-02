@@ -71,8 +71,7 @@ const handleSubmit = () => {
   // Log the updated time preferences before passing to next step
   console.log("Updated Time Preferences: ", updatedTimePreferences);
   setTimePrefs(updatedTimePreferences);
-
-  {doneExtendHours}
+  doneExtendHours
 };
     return (
         <div className="modal-overlay">

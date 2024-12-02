@@ -13,19 +13,19 @@ export default function ClassTimeProportions() {
                 id: 0,
                 value: 12,
                 color: "#03045E",
-                label: "Human-Computer Interaction",
+                label: "HCI",
               },
               {
                 id: 2,
                 value: 20,
                 color: "#0077B6",
-                label: "Business Analytics",
+                label: "Networks",
               },
               {
                 id: 1,
                 value: 15,
                 color: "#00B4D8",
-                label: "Introduction to Business at Northeastern",
+                label: "Improv",
               },
               {
                 id: 3,
