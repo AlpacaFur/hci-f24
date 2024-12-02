@@ -97,7 +97,7 @@ const Step5: React.FC<Step5Props> = ({ handlePreviousStep }) => {
       {isEventSelectionOpen && !isLoading && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h2>Select Events to Import</h2>
+            <h2>Import Sucessful</h2>
             <p>All your events have been loaded.</p>
             <button className="done-button" onClick={handleDone}>
               Done

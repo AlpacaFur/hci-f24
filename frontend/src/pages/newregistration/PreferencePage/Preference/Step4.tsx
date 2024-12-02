@@ -19,7 +19,7 @@ const Step4: React.FC<Step4Props> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClassSelectionOpen, setIsClassSelectionOpen] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false); // State to handle loading
   const openLoginModal = () => {
     console.log("Opening login modal"); // Debug
     setIsModalOpen(true);
@@ -33,7 +33,12 @@ const Step4: React.FC<Step4Props> = ({
   const handleSignIn = () => {
     console.log("Sign in clicked, closing login modal and opening class selection"); // Debug
     setIsModalOpen(false);
-    setIsClassSelectionOpen(true);
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsClassSelectionOpen(true);
+    }, 3000)
+    
   };
 
   const handleDone = () => {
@@ -87,25 +92,25 @@ const Step4: React.FC<Step4Props> = ({
       )}
 
       {/* Class Selection Modal */}
-      {isClassSelectionOpen && (
+
+    {isClassSelectionOpen && !isLoading && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h2>Select Classes to Import</h2>
-            <label>
-              <input type="checkbox" />
-              Business 1
-            </label>
-            <label>
-              <input type="checkbox" />
-              CS1000
-            </label>
-            <label>
-              <input type="checkbox" />
-              DS2000
-            </label>
+            <h2>Import Sucessful</h2>
+            <p>All your class assignments have been loaded.</p>
             <button className="done-button" onClick={handleDone}>
               Done
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Loading State */}
+      {isLoading && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Loading all Classes...</h2>
+            <p>Please wait while we import your assignments.</p>
           </div>
         </div>
       )}
