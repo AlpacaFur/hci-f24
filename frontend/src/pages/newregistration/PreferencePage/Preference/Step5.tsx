@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Path to the Google Calendar logo stored in the public folder
@@ -14,6 +14,8 @@ const Step5: React.FC<Step5Props> = ({ handlePreviousStep }) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEventSelectionOpen, setIsEventSelectionOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // State to handle loading
+ // const [selectedEvents, setSelectedEvents] = useState<string[]>([]); // Track selected events
 
   const openLoginModal = () => {
     setIsModalOpen(true);
@@ -25,15 +27,26 @@ const Step5: React.FC<Step5Props> = ({ handlePreviousStep }) => {
 
   const handleSignIn = () => {
     setIsModalOpen(false);
-    setIsEventSelectionOpen(true);
+    setIsLoading(true); // Start loading state
+    setTimeout(() => {
+      // Simulate loading for 3 seconds
+      setIsLoading(false);
+      setIsEventSelectionOpen(true); // After loading, show the event selection modal
+    }, 3000); // 3 seconds delay
   };
 
   const handleDone = () => {
+    // Simulate the events being loaded and save to localStorage
+    const eventsToStore = ["Cool Event", "Event 2", "Event 3"]; // Dummy events for this example
+    localStorage.setItem("selectedEvents", JSON.stringify(eventsToStore));
+    console.log("Selected events:", eventsToStore);
+
     setIsEventSelectionOpen(false);
     navigate("/calendar"); // Navigate to /calendar route
   };
 
   const handleSkipAndNavigate = () => {
+    localStorage.setItem("selectedEvents", JSON.stringify([])); // If skipped, store 0 events
     navigate("/calendar");
   };
 
@@ -79,25 +92,24 @@ const Step5: React.FC<Step5Props> = ({ handlePreviousStep }) => {
       )}
 
       {/* Event Selection Modal */}
-      {isEventSelectionOpen && (
+      {isEventSelectionOpen && !isLoading && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2>Select Events to Import</h2>
-            <label>
-              <input type="checkbox" />
-              Event 1
-            </label>
-            <label>
-              <input type="checkbox" />
-              Event 2
-            </label>
-            <label>
-              <input type="checkbox" />
-              Event 3
-            </label>
+            <p>All your events have been loaded.</p>
             <button className="done-button" onClick={handleDone}>
               Done
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Loading State */}
+      {isLoading && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Loading all events...</h2>
+            <p>Please wait while we import your events.</p>
           </div>
         </div>
       )}
