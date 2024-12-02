@@ -7,11 +7,12 @@ interface Step4Props {
   handleLoginWithCanvas: () => void;
   handleSkip: () => void;
   handlePreviousStep: () => void;
-  //handleNextStep: () => void; // Step 5 navigation
+  handleNextStep: () => void; // Step 5 navigation
 }
 
 const Step4: React.FC<Step4Props> = ({
   //handleLoginWithCanvas,
+  handleNextStep,
   handleSkip,
   handlePreviousStep,
   
@@ -43,24 +44,27 @@ const Step4: React.FC<Step4Props> = ({
 
   return (
     <div className="step-container">
-      <div className="centered-content">
+      <div className="inner-goop-canvas">
         <button className="login-button" onClick={openLoginModal}>
           <img src={canvasLogo} alt="Canvas Logo" className="canvas-logo" />
-          Log in with Canvas
+          Integrate your Canvas Assignments
         </button>
       </div>
-      <button onClick={handlePreviousStep} className="previous-button">
-        Back
-      </button>
-      <button onClick={handleSkip} className="skip-button">
-        Skip
-      </button>
+      <div className="buttons">
+        <button onClick={handlePreviousStep} className="back-button">
+          Back
+        </button>
+        <button onClick={handleNextStep} className="next-button">
+          Skip
+        </button>
+      </div>
+
 
       {/* Login Modal */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <img src={canvasLogo} alt="Canvas Logo" className="canvas-logo" />
+            <img src={canvasLogo} alt="Canvas Logo" className="icon-logo" />
             <h2>Log in to Canvas</h2>
             <input
               type="text"

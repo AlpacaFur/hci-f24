@@ -23,6 +23,7 @@
     display: flex;
     gap: 10px;
     margin: 10px 0;
+    justify-content: center;
   }
   
   .time-input {
@@ -31,7 +32,7 @@
     gap: 10px;
     margin-bottom: 20px;
   }
-  
+
   .time-box {
     display: flex;
     flex-direction: column;
@@ -53,54 +54,66 @@
     border-color: #007bff;
   }
   
-  .buttons {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-  }
-  
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .next-button {
-    background-color: #28a745; /* Green */
-    color: #fff;
-  }
-  
-  .next-button:hover {
-    background-color: #218838;
-    transform: scale(1.05);
-  }
-  
-  .back-button,
-  .previous-button {
-    background-color: #6c757d; /* Grey */
-    color: #fff;
-  }
-  
-  .back-button:hover,
-  .previous-button:hover {
-    background-color: #5a6268;
-    transform: scale(1.05);
-  }
-  
+/* Button Container */
+.buttons {
+  position: fixed; /* Fixed position relative to the viewport */
+  bottom: 420px; /* Distance from the bottom of the viewport */
+  left: 50%; /* Center the container horizontally */
+  transform: translateX(-50%); /* Adjust for perfect centering */
+  display: flex; /* Align buttons in a row */
+  flex-direction: row; /* Arrange buttons horizontally */
+  gap: 15px; /* Space between buttons */
+  z-index: 1000; /* Ensure buttons are on top of other content */
+  /*background-color: rgba(255, 255, 255, 0.9);  Optional: translucent background */
+  padding: 10px; /* Optional: padding around the button group */
+  border-radius: 10px; /* Optional: rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: subtle shadow */
+}
+
+/* Individual Buttons */
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Back Button Styles */
+.back-button {
+  background-color: #6c757d; /* Grey */
+  color: #fff;
+}
+
+.back-button:hover {
+  background-color: #5a6268;
+  transform: scale(1.05);
+}
+
+/* Next Button (Skip Button) Styles */
+.next-button {
+  background-color: #28a745; /* Green */
+  color: #fff;
+}
+
+.next-button:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+
   .login-button {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 10px 20px;
-    background-color: #007bff; /* Blue */
-    color: #fff;
-    font-size: 16px;
+    background-color: #82b3ef; /* Blue */
+    color: black;
+    font-size: 36px;
     font-weight: bold;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
   }
   
@@ -109,9 +122,10 @@
     transform: scale(1.05);
   }
   
-  .canvas-logo {
-    width: 30px;
-    height: 30px;
+  .icon-logo {
+    width: 180px;
+    height:180px;
+  
   }
   
   /* Modal Styles */

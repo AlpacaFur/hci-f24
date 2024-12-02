@@ -26,6 +26,7 @@ const Step3: React.FC<Step3Props> = ({
 
   return (
     <div className="step-container">
+      <div className="inner-goop">
       <label>How early do you like to know about upcoming assignments?</label>
       <div className="time-inputs">
         <input
@@ -45,6 +46,7 @@ const Step3: React.FC<Step3Props> = ({
           <option value="week">week(s)</option>
           <option value="month">month(s)</option>
         </select>
+      </div>
       </div>
       <div className="buttons">
         <button onClick={handlePreviousStep} className="back-button">

@@ -52,18 +52,20 @@ const Step5: React.FC<Step5Props> = ({ handlePreviousStep }) => {
 
   return (
     <div className="step-container">
-      <div className="centered-content">
+      <div className="inner-goop-gcal">
         <button className="login-button" onClick={openLoginModal}>
-          <img src={gcalLogo} alt="Google Calendar Logo" className="gcal-logo" />
-          Integrate your calendar! Import all of your existing events from your calendar!
+          <img src={gcalLogo} alt="Google Calendar Logo" className="icon-logo" />
+          Integrate your Google Canvas Events
         </button>
       </div>
-      <button onClick={handlePreviousStep} className="previous-button">
-        Back
-      </button>
-      <button onClick={handleSkipAndNavigate} className="skip-button">
-        Skip
-      </button>
+      <div className="buttons">
+        <button onClick={handlePreviousStep} className="back-button">
+          Back
+        </button>
+        <button onClick={handleSkipAndNavigate} className="next-button">
+          Skip
+        </button>
+      </div>
 
       {/* Login Modal */}
       {isModalOpen && (
