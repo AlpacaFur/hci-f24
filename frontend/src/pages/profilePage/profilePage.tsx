@@ -5,6 +5,7 @@ import { NavigationTabs } from "../../components/NavigationTabs";
 import "./profilePage.css";
 
 
+
 const ProfilePage = () => {
   const user = User.loadFromLocalStorage();
 

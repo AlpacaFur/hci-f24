@@ -20,7 +20,7 @@
     margin-bottom: 25px;
     font-size: 26px; /* Larger for better emphasis */
     font-weight: bold;
-    color: #003a5d;
+    color: black;
     text-align: center;
   }
   
@@ -36,7 +36,7 @@
     margin-bottom: 8px; /* Increased for readability */
     font-size: 14px;
     font-weight: 600; /* Emphasized labels */
-    color: #003a5d;
+    color: black;
   }
   
   .input-group input {
@@ -51,7 +51,7 @@
   }
   
   .input-group input:focus {
-    border-color: #003a5d;
+    border-color: #0c599c;
     box-shadow: 0 0 4px rgba(0, 58, 93, 0.3);
   }
   
@@ -76,7 +76,7 @@
   }
   
   .eye-icon:hover {
-    color: #003a5d;
+    color: #0c599c;
   }
   
   .auth-links {
@@ -90,7 +90,7 @@
   .forgot-password,
   .create-account {
     font-size: 14px;
-    color: #003a5d;
+    color: #0c599c;
     text-decoration: none;
   }
   
@@ -111,7 +111,7 @@
     padding: 14px 20px; /* Larger click area */
     font-size: 18px; /* Slightly larger font for prominence */
     font-weight: bold;
-    background-color: #003a5d;
+    background-color: #0c599c;
     color: #ffffff;
     border: none;
     border-radius: 8px; /* Matches input fields */
@@ -150,5 +150,5 @@
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #003a5d;
+  border: 2px solid black;
 }
