@@ -59,7 +59,7 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
       <div className="auth-links">
-        <a href="/forgot-password" className="forgot-password">Forgot Password?</a>
+        <a className="forgot-password">Forgot Password?</a>
         <a href="/create-user" className="create-account">Create new account</a>
       </div>
 {error && <span className="error-message">{error}</span>}
