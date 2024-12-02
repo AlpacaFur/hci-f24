@@ -142,3 +142,13 @@
     }
   }
   
+
+
+
+.birdie-logo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #003a5d;
+}

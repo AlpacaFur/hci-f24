@@ -3,7 +3,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './loginPage.css';
 import { useStudent } from '../../components/useStudent/useStudent';
-
+import birdie from "../../../public/photos/birdie.png"; // Placeholder image path
 const LoginPage: React.FC = () => {
   const { updateStudent } = useStudent();
 
@@ -33,6 +33,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="form-container">
+      <img src={birdie} alt="Birdie" className="birdie-logo" />
       <h1 className="form-title">Sign In</h1>
       <div className="input-group">
         <label>Username:</label>
