@@ -8,14 +8,6 @@ import Step5 from "./Preference/Step5"; // Import Step5
 const PreferencesForm: React.FC = () => {
   const [step, setStep] = useState(1);
 
-  // Define your state variables here
-  // const [fromHours, setFromHours] = useState<string>("1");
-  // const [fromMinutes, setFromMinutes] = useState<string>("00");
-  // const [fromPeriod, setFromPeriod] = useState<string>("AM");
-  // const [toHours, setToHours] = useState<string>("1");
-  // const [toMinutes, setToMinutes] = useState<string>("00");
-  // const [toPeriod, setToPeriod] = useState<string>("AM");
-
   const [studyHours, setStudyHours] = useState<number>(0);
   const [studyMinutes, setStudyMinutes] = useState<number>(0);
   const [breakMinutes, setBreakMinutes] = useState<number>(0);
@@ -33,10 +25,10 @@ const PreferencesForm: React.FC = () => {
     setStep(5); // Directly set step to 5 when skipping
   };
 
-  const handleLoginWithCanvas = () => {
-    console.log("Logging in with Canvas...");
-    // Add the login functionality here
-  };
+  // const handleLoginWithCanvas = () => {
+  //   console.log("Logging in with Canvas...");
+  //   // Add the login functionality here
+  // };
 
   const handleLoginWithGC = () => {
     console.log("Logging in with Google Calendar...");
@@ -72,7 +64,7 @@ const PreferencesForm: React.FC = () => {
       )}
       {step === 4 && (
         <Step4
-          handleLoginWithCanvas={handleLoginWithCanvas} // Pass handleLoginWithCanvas to Step4
+          //handleLoginWithCanvas={handleLoginWithCanvas} // Pass handleLoginWithCanvas to Step4
           handlePreviousStep={handlePreviousStep} // Pass handlePreviousStep to Step4
           handleSkip={handleSkip}  // Pass handleSkip to Step4
         />

@@ -1,44 +1,101 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { range } from "../../../calendar/range"; // Adjust path as needed
+import { Assignment } from "../../../calendar/hooks/useAssignments"; // Adjust path as needed
 
-// Path to the Canvas logo stored in the public folder
 const canvasLogo = "/photos/logos/canvaslogo.jpeg";
 
 interface Step4Props {
-  handleLoginWithCanvas: () => void;
   handleSkip: () => void;
   handlePreviousStep: () => void;
-  //handleNextStep: () => void; // Step 5 navigation
 }
 
-const Step4: React.FC<Step4Props> = ({
-  //handleLoginWithCanvas,
-  handleSkip,
-  handlePreviousStep,
-  
-}) => {
+const Step4: React.FC<Step4Props> = ({ handleSkip, handlePreviousStep }) => {
+  const initialAssignments: Assignment[] = range(1, 6).map((id) => ({
+    id,
+    title: `Project Proposal ${id}`,
+    className: "HCI",
+    priority: 0,
+    dueDate: new Date("2024-11-22T00:00:00Z"),
+    minuteLength: 60,
+  }));
+
+  const [assignments, setAssignments] = useState<Assignment[]>(initialAssignments);
+  const [checkedAssignments, setCheckedAssignments] = useState<boolean[]>(
+    new Array(initialAssignments.length).fill(true)
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClassSelectionOpen, setIsClassSelectionOpen] = useState(false);
 
+  // Log updated assignments after setAssignments
+  useEffect(() => {
+    console.log("Updated Assignments:", assignments);
+  }, [assignments]); // This will run whenever 'assignments' state changes
+
   const openLoginModal = () => {
-    console.log("Opening login modal"); // Debug
     setIsModalOpen(true);
   };
 
   const closeLoginModal = () => {
-    console.log("Closing login modal"); // Debug
     setIsModalOpen(false);
   };
 
   const handleSignIn = () => {
-    console.log("Sign in clicked, closing login modal and opening class selection"); // Debug
     setIsModalOpen(false);
     setIsClassSelectionOpen(true);
   };
 
   const handleDone = () => {
-    console.log("Done clicked, closing class selection and moving to Step 5"); // Debug
+    deleteAssignment(1);
+    deleteAssignment(2);
+    deleteAssignment(3);
+    deleteAssignment(4);
+    deleteAssignment(5);
+    deleteAssignment(6);
+    // Identify unchecked assignments
+    const uncheckedAssignmentIds = assignments
+      .filter((_, index) => !checkedAssignments[index]) // Filter unchecked assignments
+      .map((assignment) => assignment.id); // Get their IDs
+  
+    console.log("Unchecked assignment IDs:", uncheckedAssignmentIds); // Log internally
+  
+    // Update the assignments by removing unchecked ones
+    setAssignments((prevAssignments) => {
+      const updatedAssignments = prevAssignments.filter(
+        (assignment) => !uncheckedAssignmentIds.includes(assignment.id)
+      );
+      
+      // Log the updated assignments directly after filtering
+      console.log("Remaining Assignments", updatedAssignments);
+      setAssignments(updatedAssignments);
+
+
+
+      console.log("Set Assignments", assignments);
+      return updatedAssignments;
+    });
+  
     setIsClassSelectionOpen(false);
-    handleSkip(); // Navigates to Step 5
+  };
+
+  const deleteAssignment = (id: number) => {
+    setAssignments((assignments) =>
+      assignments.filter((assignment) => assignment.id !== id)
+    )
+  }
+  
+  // To remove assignment with ID 1:
+
+  
+  // // Log updated assignments whenever 'assignments' state changes
+  // useEffect(() => {
+  //   console.log("Updated Assignments:", assignments);
+  // }, [assignments]);
+  
+
+  const handleCheckboxChange = (index: number) => {
+    setCheckedAssignments((prevChecked) =>
+      prevChecked.map((checked, i) => (i === index ? !checked : checked))
+    );
   };
 
   return (
@@ -58,20 +115,12 @@ const Step4: React.FC<Step4Props> = ({
 
       {/* Login Modal */}
       {isModalOpen && (
-        <div className="modal-overlay">
+        <div className="modal-overlay" aria-labelledby="login-modal" role="dialog">
           <div className="modal-content">
             <img src={canvasLogo} alt="Canvas Logo" className="canvas-logo" />
-            <h2>Log in to Canvas</h2>
-            <input
-              type="text"
-              placeholder="Username"
-              className="input-field"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="input-field"
-            />
+            <h2 id="login-modal">Log in to Canvas</h2>
+            <input type="text" placeholder="Username" className="input-field" />
+            <input type="password" placeholder="Password" className="input-field" />
             <button className="sign-in-button" onClick={handleSignIn}>
               Sign In
             </button>
@@ -84,21 +133,23 @@ const Step4: React.FC<Step4Props> = ({
 
       {/* Class Selection Modal */}
       {isClassSelectionOpen && (
-        <div className="modal-overlay">
+        <div className="modal-overlay" aria-labelledby="class-selection-modal" role="dialog">
           <div className="modal-content">
-            <h2>Select Classes to Import</h2>
-            <label>
-              <input type="checkbox" />
-              Business 1
-            </label>
-            <label>
-              <input type="checkbox" />
-              CS1000
-            </label>
-            <label>
-              <input type="checkbox" />
-              DS2000
-            </label>
+            <h2 id="class-selection-modal">Select Assignments to Import</h2>
+            {assignments.map((assignment, index) => (
+              <div key={assignment.id} className="assignment-checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={checkedAssignments[index]}
+                    onChange={() => handleCheckboxChange(index)}
+                  />
+                  <span>
+                    {assignment.title} - {assignment.className}
+                  </span>
+                </label>
+              </div>
+            ))}
             <button className="done-button" onClick={handleDone}>
               Done
             </button>
