@@ -9,12 +9,12 @@ const PreferencesForm: React.FC = () => {
   const [step, setStep] = useState(1);
 
   // Define your state variables here
-  const [fromHours, setFromHours] = useState<string>("1");
-  const [fromMinutes, setFromMinutes] = useState<string>("00");
-  const [fromPeriod, setFromPeriod] = useState<string>("AM");
-  const [toHours, setToHours] = useState<string>("1");
-  const [toMinutes, setToMinutes] = useState<string>("00");
-  const [toPeriod, setToPeriod] = useState<string>("AM");
+  // const [fromHours, setFromHours] = useState<string>("1");
+  // const [fromMinutes, setFromMinutes] = useState<string>("00");
+  // const [fromPeriod, setFromPeriod] = useState<string>("AM");
+  // const [toHours, setToHours] = useState<string>("1");
+  // const [toMinutes, setToMinutes] = useState<string>("00");
+  // const [toPeriod, setToPeriod] = useState<string>("AM");
 
   const [studyHours, setStudyHours] = useState<number>(0);
   const [studyMinutes, setStudyMinutes] = useState<number>(0);
@@ -47,18 +47,6 @@ const PreferencesForm: React.FC = () => {
     <div className="preferences-form">
       {step === 1 && (
         <Step1
-          fromHours={fromHours}
-          fromMinutes={fromMinutes}
-          fromPeriod={fromPeriod}
-          toHours={toHours}
-          toMinutes={toMinutes}
-          toPeriod={toPeriod}
-          setFromHours={setFromHours}
-          setFromMinutes={setFromMinutes}
-          setFromPeriod={setFromPeriod}
-          setToHours={setToHours}
-          setToMinutes={setToMinutes}
-          setToPeriod={setToPeriod}
           handleNextStep={handleNextStep} // Pass handleNextStep to Step1
         />
       )}
