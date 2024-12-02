@@ -96,8 +96,9 @@ export const EditAssignmentModal: React.FC<{
           }}
         >
           <option value="HCI">HCI</option>
-          <option value="ID">ID</option>
+          <option value="DS2000">DS2000</option>
           <option value="Networks">Networks</option>
+          <option value="Improv">Improv</option>
         </select>
       </label>
       <button onClick={deleteAssignment}>Delete Assignment</button>
