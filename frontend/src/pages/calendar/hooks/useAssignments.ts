@@ -22,7 +22,7 @@ const assignmentLocationSchema = z.object({
 
 const assignmentsSchema = z.array(assignmentLocationSchema)
 
-const initialAssignments = range(1, 6).map(
+export const INITIAL_ASSIGNMENTS = range(1, 6).map(
   (id): AssignmentLocation => ({
     slotId: "assignments",
     assignment: {
@@ -138,7 +138,7 @@ export const useAssignmentStorage = () => {
   const [assignments, setAssignments] = useRefreshingLocalStorage(
     "earlybird-assignments",
     assignmentsSchema,
-    initialAssignments
+    INITIAL_ASSIGNMENTS
   )
 
   return {

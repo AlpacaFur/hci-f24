@@ -3,6 +3,10 @@ import {
   TimePreferences,
   useTimePreferences,
 } from "../../../calendar/hooks/useTimePreferences"
+import {
+  INITIAL_ASSIGNMENTS,
+  useAssignmentStorage,
+} from "../../../calendar/hooks/useAssignments"
 
 interface Step1Props {
   handleNextStep: (timePreferences: TimePreferences) => void
@@ -45,6 +49,7 @@ const Step1: React.FC<Step1Props> = ({ handleNextStep }) => {
     return hoursIn24 // Return the 24-hour formatted hour
   }
   const [, setTimePrefs] = useTimePreferences()
+  const { setAssignments } = useAssignmentStorage()
   const handleSubmit = () => {
     // Convert the "From" and "To" times to 24-hour format using the simplified conversion
     const start = convertTo24Hour(fromHours, fromMinutes, fromPeriod)
@@ -67,6 +72,7 @@ const Step1: React.FC<Step1Props> = ({ handleNextStep }) => {
         6: { start, end },
       },
     }
+    setAssignments(INITIAL_ASSIGNMENTS)
 
     // Log the updated time preferences before passing to next step
     console.log("Updated Time Preferences: ", updatedTimePreferences)
