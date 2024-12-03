@@ -23,7 +23,7 @@ import { useTimePreferences } from "./hooks/useTimePreferences"
 import { Event } from "./calendarTypes"
 import { reschedule } from "./slotAlgorithm/reschedule"
 
-const DATES = Array(7)
+export const DATES = Array(7)
   .fill(0)
   .map(
     (_, index) =>

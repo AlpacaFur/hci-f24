@@ -13,22 +13,46 @@ const eventsSchema = z.array(
 
 const initialEvents: Event[] = [
   {
-    name: "Cool Event",
-    start: new Date("2024-11-12 15:30"),
-    end: new Date("2024-11-12 18:30"),
-    id: 1,
-  },
-  {
-    name: "Cool Event 2",
-    start: new Date("2024-11-13 09:30"),
-    end: new Date("2024-11-13 10:30"),
+    name: "Improv",
+    start: new Date("2024-11-13 10:30"),
+    end: new Date("2024-11-13 11:30"),
     id: 2,
   },
   {
-    name: "Cool Event 3",
-    start: new Date("2024-11-15 13:30"),
-    end: new Date("2024-11-15 14:30"),
+    name: "Improv",
+    start: new Date("2024-11-14 10:30"),
+    end: new Date("2024-11-14 11:30"),
     id: 3,
+  },
+  {
+    name: "HCI",
+    start: new Date("2024-11-12 11:45"),
+    end: new Date("2024-11-12 13:25"),
+    id: 4,
+  },
+  {
+    name: "HCI",
+    start: new Date("2024-11-14 14:30"),
+    end: new Date("2024-11-14 16:30"),
+    id: 5,
+  },
+  {
+    name: "Networks",
+    start: new Date("2024-11-11 14:30"),
+    end: new Date("2024-11-11 16:30"),
+    id: 6,
+  },
+  {
+    name: "DS2000",
+    start: new Date("2024-11-12 14:00"),
+    end: new Date("2024-11-12 17:30"),
+    id: 8,
+  },
+  {
+    name: "DS2000",
+    start: new Date("2024-11-15 14:00"),
+    end: new Date("2024-11-15 17:30"),
+    id: 9,
   },
 ]
 

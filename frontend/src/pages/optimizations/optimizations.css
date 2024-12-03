@@ -19,20 +19,20 @@
 }
 
 .positive {
-  border: 5px solid #872fe5;
+  border: 5px solid #0c599c;
   border-radius: 15px;
-  background-color: #872fe5;
-  color: aliceblue;
+  background-color: #0c599c;
+  color: white;
   padding: 10px 25px;
   font-size: 20px;
   font-family: "Inter";
 }
 
 .negative {
-  border: 5px solid rgb(230, 108, 108);
+  border: 5px solid rgb(204, 79, 79);
   border-radius: 15px;
-  background-color: rgb(230, 108, 108);
-  color: aliceblue;
+  background-color: rgb(204, 79, 79);
+  color: white;
   padding: 15px 25px;
   font-size: 20px;
   font-family: "Inter";

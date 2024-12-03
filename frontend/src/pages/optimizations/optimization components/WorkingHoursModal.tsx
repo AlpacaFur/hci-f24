@@ -5,6 +5,11 @@ import {
   TimePreferences,
   useTimePreferences,
 } from "../../calendar/hooks/useTimePreferences"
+import { useAssignmentStorage } from "../../calendar/hooks/useAssignments"
+import { generateSlots } from "../../calendar/slotAlgorithm/generateSlots"
+import { reschedule } from "../../calendar/slotAlgorithm/reschedule"
+import { useEvents } from "../../calendar/hooks/useEvents"
+import { DATES } from "../../calendar/calendar"
 
 interface WorkingHoursModalProps {
   closeExtendHours: () => void
@@ -16,11 +21,20 @@ const WorkingHours: React.FC<WorkingHoursModalProps> = ({
   doneExtendHours,
 }) => {
   // Local state to hold user input for "from" and "to" times
-  const [fromHours, setFromHours] = useState("9")
+  const [timePrefs, setTimePrefs] = useTimePreferences()
+  const [fromHours, setFromHours] = useState(
+    String(timePrefs.workingHours[2].start)
+  )
   const [fromMinutes, setFromMinutes] = useState("00")
   const [fromPeriod, setFromPeriod] = useState("AM")
 
-  const [toHours, setToHours] = useState("5")
+  const [toHours, setToHours] = useState(
+    String(
+      timePrefs.workingHours[2].end > 12
+        ? timePrefs.workingHours[2].end - 12
+        : timePrefs.workingHours[2].end
+    )
+  )
   const [toMinutes, setToMinutes] = useState("00")
   const [toPeriod, setToPeriod] = useState("PM")
 
@@ -34,14 +48,15 @@ const WorkingHours: React.FC<WorkingHoursModalProps> = ({
     }
     return hoursIn24 // Return the 24-hour formatted hour
   }
-  const [timePrefs, setTimePrefs] = useTimePreferences()
+
+  const { setAssignments } = useAssignmentStorage()
+  const [events, setEvents] = useEvents()
   const handleSubmit = () => {
     // Convert the "From" and "To" times to 24-hour format using the simplified conversion
     const start = convertTo24Hour(fromHours, fromMinutes, fromPeriod)
     const end = convertTo24Hour(toHours, toMinutes, toPeriod)
 
-    // Create the updated time preferences
-    // Create the updated time preferences
+    // Create the updated time preferences, and adjust displayStart/End Hours to match
     const updatedTimePreferences: TimePreferences = {
       ...timePrefs,
       displayStartHour: Math.max(
@@ -67,10 +82,16 @@ const WorkingHours: React.FC<WorkingHoursModalProps> = ({
       },
     }
 
-    // Log the updated time preferences before passing to next step
+    const currentWorkBlocks = generateSlots(DATES, events, timePrefs)
+    const newWorkBlocks = generateSlots(DATES, events, updatedTimePreferences)
+    setAssignments((currentAssignments) => {
+      return reschedule(currentAssignments, currentWorkBlocks, newWorkBlocks)
+    })
     console.log("Updated Time Preferences: ", updatedTimePreferences)
     setTimePrefs(updatedTimePreferences)
     doneExtendHours()
+
+    // Log the updated time preferences before passing to next step
   }
   return (
     <div className="modal-overlay">

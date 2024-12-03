@@ -1,4 +1,3 @@
-import { range } from "../range"
 import { z } from "zod"
 import { useRefreshingLocalStorage } from "./useRefreshingLocalStorage"
 import { autoScheduleAssignments } from "../slotAlgorithm/autoSchedule"
@@ -22,20 +21,68 @@ const assignmentLocationSchema = z.object({
 
 const assignmentsSchema = z.array(assignmentLocationSchema)
 
-export const INITIAL_ASSIGNMENTS = range(1, 6).map(
-  (id): AssignmentLocation => ({
+export const INITIAL_ASSIGNMENTS: AssignmentLocation[] = [
+  {
     slotId: "assignments",
     assignment: {
       className: "HCI",
-      title: "Project Proposal " + id,
+      title: "Project Proposal",
       priority: 0,
       dueDate: new Date("2024-11-22 00:00"),
-      id,
+      id: 1,
       minuteLength: 60,
     },
     editing: false,
-  })
-)
+  },
+  {
+    slotId: "assignments",
+    assignment: {
+      className: "Networks",
+      title: "Project 4: TCP",
+      priority: 0,
+      dueDate: new Date("2024-11-22 00:00"),
+      id: 2,
+      minuteLength: 120,
+    },
+    editing: false,
+  },
+  {
+    slotId: "assignments",
+    assignment: {
+      className: "DS2000",
+      title: "Homework 8",
+      priority: 0,
+      dueDate: new Date("2024-11-22 00:00"),
+      id: 3,
+      minuteLength: 60,
+    },
+    editing: false,
+  },
+  {
+    slotId: "assignments",
+    assignment: {
+      className: "HCI",
+      title: "Final Presentation",
+      priority: 0,
+      dueDate: new Date("2024-11-22 00:00"),
+      id: 4,
+      minuteLength: 120,
+    },
+    editing: false,
+  },
+  {
+    slotId: "assignments",
+    assignment: {
+      className: "DS2000",
+      title: "Lab 7",
+      priority: 0,
+      dueDate: new Date("2024-11-22 00:00"),
+      id: 5,
+      minuteLength: 60,
+    },
+    editing: false,
+  },
+]
 
 export type Assignment = z.infer<typeof assignmentSchema>
 export type AssignmentLocation = z.infer<typeof assignmentLocationSchema>
