@@ -52,10 +52,11 @@ export const ExtraTimeComponent: React.FC<timeProps> = ({studyHours,
 
       return isVisible ? (
         <div className="optimization-divider">
-            <h3>
-                Looks like you have a lot of time to do work on <b>Tuesday</b>.
-                Would you like to add a longer break?
-            </h3>
+            <label className="title-label">
+                You worked too hard on  <b>Monday</b>.
+                Would you like to add a longer break on Tuesday?
+                
+            </label>
             <div className="aligned">
                 <button className="positive" onClick={handleYesClick}>Yes</button>
                 <button className="negative" onClick={handleNoClick}>No</button>

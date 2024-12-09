@@ -17,6 +17,7 @@
   display: flex;
   justify-content: space-around; 
   gap: 20px; 
+  padding: 30px;
 }
 
 .positive {
@@ -37,4 +38,10 @@
   padding: 15px 25px;
   font-size: 20px;
   font-family: "Inter";
+}
+
+.title-label {
+  font-family: "Inter";
+  font-size: 30px;
+  padding: 5px;
 }

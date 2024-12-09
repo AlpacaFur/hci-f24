@@ -10,8 +10,8 @@ export const AnalyticsPage: React.FC = () => {
       <div className="content-frame shift-frame adapt-to-width">
         <h1>Insights & Analytics</h1>
         <div className="charts-container">
-          <h2>Hours Studied This Week, By Class</h2>
-          <h2>Average Hours Studied, By Day of the week</h2>
+          <label className="chart-label">Hours Studied This Week, By Class</label>
+          <label className="chart-label">Average Hours Studied, By Day of the week</label>
         </div>
         <div className="charts-container">
           <ClassTimeProportions />

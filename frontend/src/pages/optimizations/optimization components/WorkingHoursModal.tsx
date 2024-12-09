@@ -99,7 +99,7 @@ const WorkingHours: React.FC<WorkingHoursModalProps> = ({
         <button className="exit-button" onClick={closeExtendHours}>
           X
         </button>
-        <label> Extend Working Hours</label>
+        <h5> Extend Working Hours</h5>
         {/* From Time */}
         <div className="time-inputs">
           <label>From</label>
@@ -162,7 +162,7 @@ const WorkingHours: React.FC<WorkingHoursModalProps> = ({
         </div>
 
         <button className="done-button" onClick={handleSubmit}>
-          Done!
+          Done
         </button>
       </div>
     </div>

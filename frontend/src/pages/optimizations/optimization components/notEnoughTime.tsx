@@ -1,37 +1,17 @@
 import { useState } from "react";
 import WorkingHours from "./WorkingHoursModal";
-import SkipEvent from "./skipEventModal";
 
 export const LessTimeComponent: React.FC = () => {
     // Tracks if optimization screen is visible
     const [isVisible, setIsVisible] = useState(true);
     // Tracks if extend hours screen is open
     const [extendHours, setExtendHours] = useState(false);
-    // Tracks if skip event is visible
-    const [skipEvent, setSkipEvent] = useState(false);
-    // Tracks if skip event confirmation is shown
-    const [skipEventNotif, setSkipEventNotif] = useState(false);
     // Tracks if extend hours confirmation is shown
     const [extendHoursNotif, setExtendHoursNotif] = useState(false);
 
     // Handler for clicking 'No'
     const handleNoClick = () => {
         setIsVisible(false); // Hide the entire component
-    };
-
-    // Handler for clicking skip event
-    const handleSkipEvent = () => {
-        setSkipEvent(true);
-    };
-
-    // Handler for closing skip event modal
-    const closeSkipEvent = () => {
-        setSkipEvent(false);
-    };
-
-    // Handler for closing skip event notificationmodal
-    const closeSkipEventNotif = () => {
-        setSkipEventNotif(false);
     };
 
     // Handler for clicking extend working hours
@@ -56,27 +36,17 @@ export const LessTimeComponent: React.FC = () => {
         setExtendHoursNotif(true);
     };
 
-    // Handler for finishing skip event
-    const doneSkipEvent = () => {
-        setSkipEvent(false);
-        setIsVisible(false);
-        setSkipEventNotif(true);
-    };
-
     return isVisible ? (
         <div className="optimization-divider">
-            <h3>
-                You don't have very long to work on <b>Wednesday</b>. What would you like to do about that?
-            </h3>
+            <label className="title-label">
+                You don't have very long to work on <b>Wednesday</b>. would you like to extend your working hours?
+            </label>
             <div className="aligned">
-                <button className="positive" onClick={handleSkipEvent}>
-                    Skip an Event
-                </button>
                 <button className="positive" onClick={handleExtendHours}>
-                    Extend Working Hours
+                    Yes
                 </button>
                 <button className="negative" onClick={handleNoClick}>
-                    Nothing
+                    No
                 </button>
             </div>
 
@@ -87,21 +57,6 @@ export const LessTimeComponent: React.FC = () => {
                 />
             )}
 
-            {skipEvent && (
-                <SkipEvent
-                    closeSkipEvent={closeSkipEvent}
-                    doneSkipEvent={doneSkipEvent}
-                />
-            )}
-
-            {skipEventNotif && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <label>Removing event from your schedule!</label>
-                        <button className="done-button" onClick={closeSkipEventNotif}>Done!</button>
-                    </div>
-                    </div>
-            )}
                         {extendHoursNotif && (
                 <div className="modal-overlay">
                     <div className="modal-content">
